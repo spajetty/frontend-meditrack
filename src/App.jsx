@@ -1,12 +1,17 @@
-import PatientForm from "./components/PatientForm";
-import PatientList from "./components/PatientList";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LandingLayout from "./layouts/LandingLayout";
+import LandingPage from "./pages/LandingPage";
+import LoginPage from "./pages/LoginPage";     // Create this later
+import RegisterPage from "./pages/RegisterPage"; // Create this later
 
 export default function App() {
   return (
-    <div className="max-w-md mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Medicine Tracker</h1>
-      <PatientForm onSuccess={() => window.location.reload()} />
-      <PatientList />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingLayout><LandingPage /></LandingLayout>} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
