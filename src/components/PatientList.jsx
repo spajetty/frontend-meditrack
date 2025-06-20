@@ -6,7 +6,7 @@ export default function PatientList() {
 
   const fetchPatients = async () => {
     try {
-      const response = await axios.get("https://localhost:PORT/api/patients");
+      const response = await axios.get("https://localhost:7015/api/patients");
       setPatients(response.data);
     } catch (error) {
       console.error("Error fetching patients", error);
@@ -22,7 +22,9 @@ export default function PatientList() {
       <h2 className="font-bold mb-2">Patients:</h2>
       <ul className="list-disc pl-4">
         {patients.map((patient) => (
-          <li key={patient.id}>{patient.name}</li>
+          <li key={patient.patientId}>
+            {patient.fullName} - {patient.email} - {new Date(patient.dateOfBirth).toLocaleDateString()}
+          </li>
         ))}
       </ul>
       <button
