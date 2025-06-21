@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../assets/meditrack-logo.png";
 import { registerDoctor, searchDoctors, registerPatient } from "../api/auth";
+import Modal from "../components/Modal"; // ← Import Modal component
 
 export default function RegisterPage() {
   const [searchParams] = useSearchParams();
@@ -18,7 +19,7 @@ export default function RegisterPage() {
   });
   const [doctorResults, setDoctorResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [modal, setModal] = useState({ show: false, message: "", success: false });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -39,23 +40,17 @@ export default function RegisterPage() {
   }, [form.doctorSearch, role]);
 
   const checkEmailExists = async (email) => {
-    try {
-      const response = await fetch(`https://localhost:7015/api/auth/check-email?email=${encodeURIComponent(email)}`);
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(text || "Unable to verify email.");
-      }
-      return await response.json(); // expects `true` or `false`
-    } catch (err) {
-      throw new Error(err.message || "Unable to verify email.");
+    const response = await fetch(`https://localhost:7015/api/auth/check-email?email=${encodeURIComponent(email)}`);
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || "Unable to verify email.");
     }
+    return await response.json(); // expects `true` or `false`
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     try {
       const exists = await checkEmailExists(form.email);
@@ -68,8 +63,7 @@ export default function RegisterPage() {
           specialty: form.specialty,
           password: form.password,
         });
-        alert("Doctor registered successfully!");
-        navigate("/login?role=doctor");
+        setModal({ show: true, message: "Doctor registered successfully!", success: true });
       } else {
         if (!form.selectedDoctorId) {
           throw new Error("Please select a doctor.");
@@ -81,13 +75,10 @@ export default function RegisterPage() {
           doctorId: form.selectedDoctorId,
           password: form.password,
         });
-        alert("Patient registered successfully!");
-        navigate("/login?role=patient");
+        setModal({ show: true, message: "Patient registered successfully!", success: true });
       }
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      setModal({ show: true, message: err.message, success: false });
     }
   };
 
@@ -105,17 +96,13 @@ export default function RegisterPage() {
 
         <div className="flex justify-center mb-6 space-x-2">
           <button
-            className={`px-4 py-1 rounded ${
-              role === "patient" ? "bg-green-500 text-white" : "bg-gray-200"
-            }`}
+            className={`px-4 py-1 rounded ${role === "patient" ? "bg-green-500 text-white" : "bg-gray-200"}`}
             onClick={() => setRole("patient")}
           >
             Patient
           </button>
           <button
-            className={`px-4 py-1 rounded ${
-              role === "doctor" ? "bg-green-500 text-white" : "bg-gray-200"
-            }`}
+            className={`px-4 py-1 rounded ${role === "doctor" ? "bg-green-500 text-white" : "bg-gray-200"}`}
             onClick={() => setRole("doctor")}
           >
             Doctor
@@ -123,8 +110,6 @@ export default function RegisterPage() {
         </div>
 
         <h3 className="text-xl font-semibold mb-4 text-center">Register as {role}</h3>
-
-        {error && <div className="text-red-500 mb-4">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <input
@@ -189,7 +174,6 @@ export default function RegisterPage() {
                 required
               />
 
-              {/* Doctor Search */}
               {!form.selectedDoctorId ? (
                 <>
                   <input
@@ -206,7 +190,6 @@ export default function RegisterPage() {
                       });
                     }}
                   />
-
                   {form.doctorSearch.trim() !== "" && (
                     <div className="border rounded mb-4 shadow max-h-40 overflow-y-auto bg-white z-10 relative">
                       {doctorResults.length > 0 ? (
@@ -237,13 +220,13 @@ export default function RegisterPage() {
                   <span className="text-gray-700">{form.doctorSearch}</span>
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={() =>
                       setForm((prev) => ({
                         ...prev,
                         doctorSearch: "",
                         selectedDoctorId: null,
-                      }));
-                    }}
+                      }))
+                    }
                     className="text-sm text-red-500 hover:underline"
                   >
                     Change
@@ -264,14 +247,23 @@ export default function RegisterPage() {
 
         <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <Link
-            to={`/login?role=${role}`}
-            className="text-blue-500 font-medium hover:underline"
-          >
+          <Link to={`/login?role=${role}`} className="text-blue-500 font-medium hover:underline">
             Login here
           </Link>
         </p>
       </div>
+
+      {/* ✅ Modal here */}
+      <Modal
+        show={modal.show}
+        onClose={() => {
+          setModal({ ...modal, show: false });
+          setLoading(false);
+          if (modal.success) navigate(`/login?role=${role}`);
+        }}
+        message={modal.message}
+        success={modal.success}
+      />
     </div>
   );
 }
