@@ -38,12 +38,29 @@ export default function RegisterPage() {
     return () => clearTimeout(delayDebounceFn);
   }, [form.doctorSearch, role]);
 
+  const checkEmailExists = async (email) => {
+    try {
+      const response = await fetch(`https://localhost:7015/api/auth/check-email?email=${encodeURIComponent(email)}`);
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || "Unable to verify email.");
+      }
+      return await response.json(); // expects `true` or `false`
+    } catch (err) {
+      throw new Error(err.message || "Unable to verify email.");
+    }
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
+      const exists = await checkEmailExists(form.email);
+      if (exists) throw new Error("Email already exists.");
+
       if (role === "doctor") {
         await registerDoctor({
           fullName: form.fullName,
@@ -57,7 +74,6 @@ export default function RegisterPage() {
         if (!form.selectedDoctorId) {
           throw new Error("Please select a doctor.");
         }
-
         await registerPatient({
           fullName: form.fullName,
           email: form.email,
