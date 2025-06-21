@@ -66,7 +66,7 @@ export default function LandingPage() {
               </svg>
             </div>
             <h4 className="text-xl font-semibold mb-2">Custom Reminders</h4>
-            <p className="text-gray-600">Set personalized reminders that work with your daily routine.</p>
+            <p className="text-gray-600">Set personalized reminders that work with your daily routine. Highlight missed doses for further tracking and practice accountability in handling your meds.</p>
           </div>
         </div>
       </div>
