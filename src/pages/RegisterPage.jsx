@@ -120,8 +120,8 @@ export default function RegisterPage() {
         <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{" "}
           <Link
-            to="/login"
-            className="text-green-500 font-medium hover:underline"
+            to={`/login?role=${role}`}
+            className="text-blue-500 font-medium hover:underline"
           >
             Login here
           </Link>
