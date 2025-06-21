@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import logo from '../assets/meditrack-logo.png';
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import logo from "../assets/meditrack-logo.png";
+import { registerDoctor } from "../api/auth";
 
 export default function RegisterPage() {
   const [searchParams] = useSearchParams();
@@ -10,12 +11,41 @@ export default function RegisterPage() {
     fullName: "",
     email: "",
     specialty: "",
+    password: "",
     dateOfBirth: "",
     doctorSearch: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (role === "doctor") {
+      setLoading(true);
+      setError("");
+      try {
+        await registerDoctor({
+          fullName: form.fullName,
+          email: form.email,
+          specialty: form.specialty,
+          password: form.password,
+        });
+        alert("Doctor registered successfully!");
+        navigate("/login?role=doctor");
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      alert("Patient registration not implemented yet.");
+    }
   };
 
   return (
@@ -24,13 +54,12 @@ export default function RegisterPage() {
         <div className="flex items-center space-x-2 flex-center">
           <img src={logo} alt="logo" width={40} />
           <h1 className="text-2xl font-bold font-poppins">
-              <span className="text-emerald-500">Medi</span>
-              <span className="text-cyan-500">Track</span>
+            <span className="text-emerald-500">Medi</span>
+            <span className="text-cyan-500">Track</span>
           </h1>
         </div>
         <hr className="mt-3 mb-4 border-t-4 border-gray-300" />
 
-        {/* Role Switcher */}
         <div className="flex justify-center mb-6 space-x-2">
           <button
             className={`px-4 py-1 rounded ${
@@ -52,7 +81,9 @@ export default function RegisterPage() {
 
         <h3 className="text-xl font-semibold mb-4 text-center">Register as {role}</h3>
 
-        <form>
+        {error && <div className="text-red-500 mb-4">{error}</div>}
+
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="fullName"
@@ -60,6 +91,7 @@ export default function RegisterPage() {
             className="w-full mb-4 p-2 border rounded"
             value={form.fullName}
             onChange={handleChange}
+            required
           />
           <input
             type="email"
@@ -68,17 +100,30 @@ export default function RegisterPage() {
             className="w-full mb-4 p-2 border rounded"
             value={form.email}
             onChange={handleChange}
+            required
           />
 
           {role === "doctor" && (
-            <input
-              type="text"
-              name="specialty"
-              placeholder="Specialty"
-              className="w-full mb-4 p-2 border rounded"
-              value={form.specialty}
-              onChange={handleChange}
-            />
+            <>
+              <input
+                type="text"
+                name="specialty"
+                placeholder="Specialty"
+                className="w-full mb-4 p-2 border rounded"
+                value={form.specialty}
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="w-full mb-4 p-2 border rounded"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+            </>
           )}
 
           {role === "patient" && (
@@ -111,9 +156,10 @@ export default function RegisterPage() {
 
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
 
