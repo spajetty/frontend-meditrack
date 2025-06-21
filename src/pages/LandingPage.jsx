@@ -25,7 +25,7 @@ export default function LandingPage() {
       {/* About MediTrack */}
       <section id="about" ></section><br /><br />
       <div className="p-8 text-center max-w-4xl mx-auto ">
-        <h3 className="text-3xl font-bold mb-4">About MediTrack</h3><br />
+        <h3 className="sub-head">About MediTrack</h3><br />
         <p className="text-gray-700">
             MediTrack bridges the gap between doctors and patients by providing an organized way to track 
             prescribed medications and schedules. With regular updates and reminders, patients stay informed 
@@ -37,8 +37,8 @@ export default function LandingPage() {
 
       {/* How It Helps */}
       <section id="helps"></section><br /><br />
-      <div className="p-8 bg-gray-100 ">
-        <h3 className="text-3xl font-bold text-center mb-6">How Medicine Tracking Helps</h3><br />
+      <div className="p-8 bg-gray-100 text-center">
+        <h3 className="sub-head">How Medicine Tracking Helps</h3><br />
         <div className="grid md:grid-cols-3 gap-6 text-center lg:ml-10 md:ml-5 sm:ml-2 lg:mr-10 md:mr-5 sm:mr-2">
           <div>
             <svg xmlns="http://www.w3.org/2000/svg" className='mx-auto mb-3' width="50" height="50" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">
@@ -68,13 +68,13 @@ export default function LandingPage() {
       </div>
 
       {/* Contact Section */}
-      <section id="contact" className="p-8">
-        <h3 className="text-3xl font-bold text-center mb-4">Contact Us</h3>
+      <section id="contact" className="p-8 text-center">
+        <h3 className="sub-head">Contact Us</h3>
         <form className="max-w-md mx-auto space-y-4">
-          <input type="text" placeholder="Your Name" className="w-full border rounded px-3 py-2" />
-          <input type="email" placeholder="Your Email" className="w-full border rounded px-3 py-2" />
-          <textarea placeholder="Your Message" className="w-full border rounded px-3 py-2" rows="4"></textarea>
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Send Message</button>
+          <input type="text" placeholder="Your Name" className="input-design" />
+          <input type="email" placeholder="Your Email" className="input-design" />
+          <textarea placeholder="Your Message" className="input-design" rows="4"></textarea>
+          <button type="submit" className="w-full link">Send Message</button>
         </form>
       </section>
 
