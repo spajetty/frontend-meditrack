@@ -74,7 +74,7 @@ export default function LandingPage() {
           <input type="text" placeholder="Your Name" className="input-design" />
           <input type="email" placeholder="Your Email" className="input-design" />
           <textarea placeholder="Your Message" className="input-design" rows="4"></textarea>
-          <button type="submit" className="w-full link">Send Message</button>
+          <button type="submit" className="w-full link-reverse">Send Message</button>
         </form>
       </section>
 

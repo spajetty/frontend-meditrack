@@ -23,7 +23,7 @@ body {
   .link {
     @apply bg-lightblue text-dark-teal px-4 py-2 rounded hover:bg-aquamarine font-semibold;
   }
-  .link {
+  .link-reverse {
     @apply bg-dark-teal text-white px-4 py-2 rounded hover:bg-aquamarine hover:text-dark-teal font-semibold;
   }
   .sub-head {
