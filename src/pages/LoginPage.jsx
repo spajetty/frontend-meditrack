@@ -1,13 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from '../assets/meditrack-logo.png';
 
 export default function LoginPage() {
   const [role, setRole] = useState("patient"); // default patient
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-dark-teal p-4">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Welcome to MediTrack</h2>
+      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+        <div className="flex items-center space-x-2 flex-center">
+          <img src={logo} alt="logo" width={40} />
+          <h1 className="text-2xl font-bold font-poppins">
+              <span className="text-emerald-500">Medi</span>
+              <span className="text-cyan-500">Track</span>
+          </h1>
+        </div>
+        <hr className="mt-3 mb-4 border-t-4 border-gray-300" />
 
         {/* Role Switcher */}
         <div className="flex justify-center mb-6 space-x-2">
