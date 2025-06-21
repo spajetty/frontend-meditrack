@@ -3,3 +3,24 @@
 body {
   font-family: 'Poppins', sans-serif;
 }
+
+@theme {
+  --color-dark-teal: #256b67;
+  --color-aquamarine: #9deab4;
+  --color-lightblue: #66dff5;
+}
+
+@layer components {
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+  .flex-center-col {
+    @apply flex justify-center items-center flex-col;
+  }
+  .flex-center-row {
+    @apply flex justify-center items-center flex-row;
+  }
+  .link {
+    @apply bg-lightblue text-dark-teal px-4 py-2 rounded hover:bg-aquamarine font-semibold;
+  }
+}

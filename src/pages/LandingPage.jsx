@@ -6,17 +6,17 @@ export default function LandingPage() {
     <div className="pt-18 w-full"> {/* Added padding-top for fixed navbar */}
        
       {/* Hero Banner */}
-      <section className="flex flex-col md:flex-row lg:h-full md:h-80 sm:h-110 h-120 items-center justify-center bg-[#256b67] text-white  px-8">
+      <section className="flex-center-col md:flex-row lg:h-full md:h-80 sm:h-110 h-120 bg-dark-teal text-white  px-8">
         <img src={banner} alt="Banner" className="w-50 lg:w-2/6 md:w-1/3 sm:w-1/3"/>
         <div className="md:w-1/2 text-center md:text-left lg:ml-10 md:ml-5 sm:ml-2">
           <h2 className="lg:text-4xl text-3xl font-bold mb-4">
-            <span className="text-[#9deab4]">Trust us, </span>
-            <span className="text-[#66dff5]">your liver
-            will <span className="text-[#9deab4]"> thank you! </span></span>
+            <span className="text-aquamarine">Trust us, </span>
+            <span className="text-lightblue">your liver
+            will <span className="text-aquamarine"> thank you! </span></span>
           </h2><br />
 
           <p className="lg:text-xl md:text-lg font-medium italic mb-4">We help track your meds, not your browser history, you're safe here :)</p><br />
-          <Link to="/register" className="bg-[#66dff5] text-[#115456] px-4 py-2 rounded hover:bg-[#9deab4] font-semibold">
+          <Link to="/register" className="link">
             Register Now
           </Link>
         </div>
@@ -48,10 +48,12 @@ export default function LandingPage() {
             <h4 className="text-xl font-semibold mb-2">Stay on Track</h4>
             <p className="text-gray-600">Get notified for every scheduled dose so you stay consistent. Helps you indicate which meals you need totake as soon as possible without needing an exact prescription paper.</p>
           </div>
-          <div>
-            <svg xmlns="http://www.w3.org/2000/svg" className='mx-auto mb-3' width="50" height="50" fill="currentColor" class="bi bi-lungs-fill" viewBox="0 0 16 16">
+          <div className='mx-auto'>
+            <div className='flex justify-center items-center mb-3'>
+              <svg xmlns="http://www.w3.org/2000/svg" className='mx-auto mb-3' width="50" height="50" fill="currentColor" class="bi bi-lungs-fill" viewBox="0 0 16 16">
                 <path d="M8 1a.5.5 0 0 1 .5.5v5.243L9 7.1V4.72C9 3.77 9.77 3 10.72 3c.524 0 1.023.27 1.443.592.431.332.847.773 1.216 1.229.736.908 1.347 1.946 1.58 2.48.176.405.393 1.16.556 2.011.165.857.283 1.857.24 2.759-.04.867-.232 1.79-.837 2.33-.67.6-1.622.556-2.741-.004l-1.795-.897A2.5 2.5 0 0 1 9 11.264V8.329l-1-.715-1 .715V7.214c-.1 0-.202.03-.29.093l-2.5 1.786a.5.5 0 1 0 .58.814L7 8.329v2.935A2.5 2.5 0 0 1 5.618 13.5l-1.795.897c-1.12.56-2.07.603-2.741.004-.605-.54-.798-1.463-.838-2.33-.042-.902.076-1.902.24-2.759.164-.852.38-1.606.558-2.012.232-.533.843-1.571 1.579-2.479.37-.456.785-.897 1.216-1.229C4.257 3.27 4.756 3 5.28 3 6.23 3 7 3.77 7 4.72V7.1l.5-.357V1.5A.5.5 0 0 1 8 1m3.21 8.907a.5.5 0 1 0 .58-.814l-2.5-1.786A.5.5 0 0 0 9 7.214V8.33z"/>
             </svg>
+            </div>
             <h4 className="text-xl font-semibold mb-2">Better Health</h4>
             <p className="text-gray-600">Consistent medication improves health outcomes over time. Because of consistent medication, illnesses can be further prevented from getting worse.</p>
           </div>
