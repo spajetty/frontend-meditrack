@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../assets/meditrack-logo.png";
-import { registerDoctor } from "../api/auth";
+import { registerDoctor, searchDoctors, registerPatient } from "../api/auth";
 
 export default function RegisterPage() {
   const [searchParams] = useSearchParams();
@@ -14,7 +14,9 @@ export default function RegisterPage() {
     password: "",
     dateOfBirth: "",
     doctorSearch: "",
+    selectedDoctorId: null,
   });
+  const [doctorResults, setDoctorResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -23,13 +25,26 @@ export default function RegisterPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (role === "patient" && form.doctorSearch.trim() !== "") {
+        searchDoctors(form.doctorSearch)
+          .then((data) => setDoctorResults(data))
+          .catch(() => setDoctorResults([])); // Clear if no matches
+      } else {
+        setDoctorResults([]);
+      }
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [form.doctorSearch, role]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    if (role === "doctor") {
-      setLoading(true);
-      setError("");
-      try {
+    try {
+      if (role === "doctor") {
         await registerDoctor({
           fullName: form.fullName,
           email: form.email,
@@ -38,13 +53,25 @@ export default function RegisterPage() {
         });
         alert("Doctor registered successfully!");
         navigate("/login?role=doctor");
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      } else {
+        if (!form.selectedDoctorId) {
+          throw new Error("Please select a doctor.");
+        }
+
+        await registerPatient({
+          fullName: form.fullName,
+          email: form.email,
+          dateOfBirth: form.dateOfBirth,
+          doctorId: form.selectedDoctorId,
+          password: form.password,
+        });
+        alert("Patient registered successfully!");
+        navigate("/login?role=patient");
       }
-    } else {
-      alert("Patient registration not implemented yet.");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,23 +161,79 @@ export default function RegisterPage() {
                 className="w-full mb-4 p-2 border rounded"
                 value={form.dateOfBirth}
                 onChange={handleChange}
+                required
               />
-              <div className="flex gap-2 mb-4">
-                <input
-                  type="text"
-                  name="doctorSearch"
-                  placeholder="Search Doctor"
-                  className="w-full p-2 border rounded"
-                  value={form.doctorSearch}
-                  onChange={handleChange}
-                />
-                <button
-                  type="button"
-                  className="bg-blue-500 text-white px-4 rounded hover:bg-blue-600"
-                >
-                  Search
-                </button>
-              </div>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="w-full mb-4 p-2 border rounded"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+
+              {/* Doctor Search */}
+              {!form.selectedDoctorId ? (
+                <>
+                  <input
+                    type="text"
+                    name="doctorSearch"
+                    placeholder="Search Doctor"
+                    className="w-full mb-2 p-2 border rounded"
+                    value={form.doctorSearch}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        doctorSearch: e.target.value,
+                        selectedDoctorId: null,
+                      });
+                    }}
+                  />
+
+                  {form.doctorSearch.trim() !== "" && (
+                    <div className="border rounded mb-4 shadow max-h-40 overflow-y-auto bg-white z-10 relative">
+                      {doctorResults.length > 0 ? (
+                        doctorResults.map((doc) => (
+                          <div
+                            key={doc.doctorId}
+                            onClick={() => {
+                              setForm((prev) => ({
+                                ...prev,
+                                doctorSearch: doc.fullName,
+                                selectedDoctorId: doc.doctorId,
+                              }));
+                              setDoctorResults([]);
+                            }}
+                            className="p-2 cursor-pointer hover:bg-gray-100"
+                          >
+                            {doc.fullName}
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-sm p-2">No matches found.</p>
+                      )}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="mb-4 flex items-center justify-between border rounded p-2 bg-gray-50">
+                  <span className="text-gray-700">{form.doctorSearch}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setForm((prev) => ({
+                        ...prev,
+                        doctorSearch: "",
+                        selectedDoctorId: null,
+                      }));
+                    }}
+                    className="text-sm text-red-500 hover:underline"
+                  >
+                    Change
+                  </button>
+                </div>
+              )}
             </>
           )}
 
