@@ -15,6 +15,14 @@ export async function registerDoctor(data) {
   return await response.text();
 }
 
+export async function searchDoctors(query) {
+  const response = await fetch(`https://localhost:7015/api/auth/search-doctors?query=${encodeURIComponent(query)}`);
+  if (!response.ok) {
+    throw new Error("No matching doctors found.");
+  }
+  return await response.json();
+}
+
 export async function registerPatient(data) {
   const response = await fetch("https://localhost:7015/api/auth/patient-register", {
     method: "POST",
