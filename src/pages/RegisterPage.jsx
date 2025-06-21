@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import logo from '../assets/meditrack-logo.png';
 
 export default function RegisterPage() {
-  const [role, setRole] = useState("patient"); // default patient
+  const [searchParams] = useSearchParams();
+  const defaultRole = searchParams.get("role") || "patient";
+  const [role, setRole] = useState(defaultRole);
   const [form, setForm] = useState({
     fullName: "",
     email: "",

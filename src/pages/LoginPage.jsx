@@ -66,7 +66,7 @@ export default function LoginPage() {
         <p className="mt-4 text-center text-sm text-gray-600">
           Don't have an account?{" "}
           <Link
-            to="/register"
+            to={`/register?role=${role}`}
             className="text-blue-500 font-medium hover:underline"
           >
             Register here
