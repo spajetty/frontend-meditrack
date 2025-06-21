@@ -14,3 +14,18 @@ export async function registerDoctor(data) {
 
   return await response.text();
 }
+
+export async function registerPatient(data) {
+  const response = await fetch("https://localhost:7015/api/auth/patient-register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error);
+  }
+  return await response.text();
+}
