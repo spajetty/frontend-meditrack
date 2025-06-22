@@ -2,8 +2,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/meditrack-logo.png";
 import { useAuth } from "../../context/AuthContext";
 
-
-
 const menuItems = [
   { to: "/patient-dashboard", label: "Dashboard" },
   { to: "/profile", label: "Profile" },

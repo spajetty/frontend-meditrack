@@ -1,5 +1,3 @@
-import DashboardLayout from "../layouts/DashboardLayout";
-
 export default function DoctorDashboard() {
   return (
     <div>
