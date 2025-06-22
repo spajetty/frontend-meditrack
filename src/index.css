@@ -4,6 +4,11 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @theme {
   --color-dark-teal: #256b67;
   --color-aquamarine: #9deab4;
