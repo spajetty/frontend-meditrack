@@ -37,3 +37,23 @@ export async function registerPatient(data) {
   }
   return await response.text();
 }
+
+export async function loginPatient(data) {
+  const response = await fetch("https://localhost:7015/api/auth/patient-login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error(await response.text());
+  return await response.text();
+}
+
+export async function loginDoctor(data) {
+  const response = await fetch("https://localhost:7015/api/auth/doctor-login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error(await response.text());
+  return await response.text();
+}
