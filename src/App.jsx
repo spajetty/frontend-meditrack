@@ -6,8 +6,14 @@ import LandingLayout from "./layouts/LandingLayout";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+
 import PatientDashboard from "./pages/PatientDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
+import Profile from "./pages/Profile";
+import Prescription from "./pages/Prescription";
+import Patient from "./pages/Patient";
+import HowToUse from "./pages/HowToUse";
+import DashboardLayout from "./layouts/DashboardLayout";
 
 export default function App() {
   return (
@@ -17,19 +23,55 @@ export default function App() {
           <Route path="/" element={<LandingLayout><LandingPage /></LandingLayout>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
+          {/* Patient routes */}
           <Route
             path="/patient-dashboard"
             element={
               <ProtectedRoute role="patient">
-                <PatientDashboard />
+                <DashboardLayout><PatientDashboard /></DashboardLayout>
               </ProtectedRoute>
             }
           />
           <Route
+            path="/prescriptions"
+            element={
+              <ProtectedRoute role="patient">
+                <DashboardLayout><Prescription /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout><Profile /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/how-to-use"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout><HowToUse /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Doctor routes */}
+          <Route
             path="/doctor-dashboard"
             element={
               <ProtectedRoute role="doctor">
-                <DoctorDashboard />
+                <DashboardLayout><DoctorDashboard /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patients"
+            element={
+              <ProtectedRoute role="doctor">
+                <DashboardLayout><Patient /></DashboardLayout>
               </ProtectedRoute>
             }
           />
