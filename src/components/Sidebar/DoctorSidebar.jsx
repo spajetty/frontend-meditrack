@@ -15,10 +15,11 @@ export default function DoctorSidebar({ mobile = false, onClose = () => {} }) {
   const { logout } = useAuth();
 
   const handleLogout = () => {
+    const currentRole = localStorage.getItem("role"); // ✅ GET before removing
     logout();
-    localStorage.removeItem("role");
-    navigate("/login?role=doctor"); // or ?role=patient
- };
+    localStorage.removeItem("role"); 
+    navigate(`/login?role=${currentRole}`); // ✅ Use correct role for redirect
+  };
 
   return (
     <div className={`${mobile ? "p-2" : "h-screen w-64 bg-dark-teal text-white flex flex-col"}`}>
