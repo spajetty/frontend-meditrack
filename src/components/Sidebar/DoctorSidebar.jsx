@@ -4,8 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 
 const menuItems = [
   { to: "/doctor-dashboard", label: "Dashboard" },
-  { to: "/profile", label: "Profile" },
   { to: "/patients", label: "Patients" },
+  { to: "/profile", label: "Profile" },
   { to: "/how-to-use", label: "How to Use" },
 ];
 
