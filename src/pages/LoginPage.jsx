@@ -22,30 +22,31 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      let data;
-      if (role === "patient") {
-        data = await loginPatient(form);
-      } else {
-        data = await loginDoctor(form);
-      }
-
-      login({ email: form.email, role }); // ✅ Store in context
-
-      setModal({ show: true, message: "Login successful!", success: true });
-
-      // Navigate to respective dashboard after a brief delay
-      setTimeout(() => {
-        navigate(role === "patient" ? "/patient-dashboard" : "/doctor-dashboard");
-      }, 1000);
-    } catch (err) {
-      setModal({ show: true, message: err.message || "Login failed", success: false });
-    } finally {
-      setLoading(false);
+  e.preventDefault();
+  setLoading(true);
+  try {
+    let data;
+    if (role === "patient") {
+      data = await loginPatient(form); // returns full patient object
+    } else {
+      data = await loginDoctor(form); // returns full doctor object
     }
-  };
+
+    login(data); // ✅ store full user data in context
+
+    setModal({ show: true, message: "Login successful!", success: true });
+
+    // Navigate after brief delay
+    setTimeout(() => {
+      navigate(role === "patient" ? "/patient-dashboard" : "/doctor-dashboard");
+    }, 1000);
+  } catch (err) {
+    setModal({ show: true, message: err.message || "Login failed", success: false });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-dark-teal p-4">

@@ -44,8 +44,9 @@ export async function loginPatient(data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
+
   if (!response.ok) throw new Error(await response.text());
-  return await response.text();
+  return await response.json(); // 👈 changed from `.text()` to `.json()`
 }
 
 export async function loginDoctor(data) {
@@ -54,6 +55,8 @@ export async function loginDoctor(data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
+
   if (!response.ok) throw new Error(await response.text());
-  return await response.text();
+  return await response.json(); // 👈 changed here too
 }
+
