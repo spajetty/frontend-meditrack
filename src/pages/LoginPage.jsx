@@ -15,7 +15,7 @@ export default function LoginPage() {
 
   const [modal, setModal] = useState({ show: false, message: "", success: false });
   const navigate = useNavigate();
-  const { login } = useAuth(); // ← from AuthContext
+  const { login } = useAuth(); 
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
