@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Prescription() {
   const { user } = useAuth();
-  console.log("user from context:", user);
+  //console.log("user from context:", user);
 
   const [prescriptions, setPrescriptions] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -14,9 +14,8 @@ export default function Prescription() {
     instruction: "",
     startDate: "",
     endDate: "",
-    isRecurring: false,
-    recurringIntervalHours: "",
-    days: [],
+    scheduleType: "daily", // 'daily' or 'custom'
+    days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     times: [],
   });
 
@@ -38,10 +37,10 @@ export default function Prescription() {
   }, [user]);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
@@ -83,19 +82,11 @@ export default function Prescription() {
       instruction: formData.instruction,
       startDate: formData.startDate,
       endDate: formData.endDate,
-      isRecurring: formData.isRecurring,
-      recurringIntervalHours: formData.isRecurring
-        ? parseInt(formData.recurringIntervalHours)
-        : null,
       patientId: user.patientId,
-      days: formData.isRecurring
-        ? null
-        : formData.days.map((dayName) =>
-            ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].indexOf(
-              dayName
-            )
-          ),
-      times: formData.isRecurring ? null : formData.times,
+      days: formData.days.map((dayName) =>
+        ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].indexOf(dayName)
+      ),
+      times: formData.times,
     };
 
     try {
@@ -169,67 +160,81 @@ export default function Prescription() {
             </div>
           </div>
 
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                name="isRecurring"
-                checked={formData.isRecurring}
-                onChange={handleInputChange}
-              />
-              &nbsp;Recurring (Every x hours)
-            </label>
-            {formData.isRecurring && (
-              <input
-                type="number"
-                name="recurringIntervalHours"
-                value={formData.recurringIntervalHours}
-                onChange={handleInputChange}
-                className="w-full border p-2 rounded mt-2"
-                placeholder="e.g. 8"
-              />
-            )}
+          <div className="mb-4">
+            <label className="font-semibold">Schedule Type:</label>
+            <div className="flex gap-4 mt-2">
+              <label>
+                <input
+                  type="radio"
+                  name="scheduleType"
+                  value="daily"
+                  checked={formData.scheduleType === "daily"}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      scheduleType: e.target.value,
+                      days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                    }))
+                  }
+                />
+                <span className="text-transparent">s</span> Daily
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="scheduleType"
+                  value="custom"
+                  checked={formData.scheduleType === "custom"}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      scheduleType: e.target.value,
+                      days: [],
+                    }))
+                  }
+                />
+                <span className="text-transparent">s</span>Choose Specific Day(s)
+              </label>
+            </div>
           </div>
 
-          {!formData.isRecurring && (
-            <>
-              <div>
-                <label>Select Days:</label>
-                <div className="grid grid-cols-3 gap-2 mt-2">
-                  {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
-                    <label key={day} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={formData.days.includes(day)}
-                        onChange={() => handleDayToggle(day)}
-                      />
-                      <span className="ml-1">{day}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label>Times of Day:</label>
-                {formData.times.map((time, index) => (
-                  <input
-                    key={index}
-                    type="time"
-                    value={time}
-                    onChange={(e) => handleTimeChange(index, e.target.value)}
-                    className="w-full border p-2 rounded mb-2"
-                  />
+          {formData.scheduleType === "custom" && (
+            <div>
+              <label className="font-semibold">Select Day(s):</label>
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
+                  <label key={day} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.days.includes(day)}
+                      onChange={() => handleDayToggle(day)}
+                    />
+                    <span className="ml-1">{day}</span>
+                  </label>
                 ))}
-                <button
-                  type="button"
-                  className="text-blue-500 hover:underline"
-                  onClick={handleAddTime}
-                >
-                  + Add Time
-                </button>
               </div>
-            </>
+            </div>
           )}
+
+          <div>
+            <label className="font-semibold">Time(s) to take medicine:</label>
+            {formData.times.map((time, index) => (
+              <input
+                key={index}
+                type="time"
+                value={time}
+                onChange={(e) => handleTimeChange(index, e.target.value)}
+                className="w-full border p-2 rounded mb-2"
+              />
+            ))}
+            <button
+              type="button"
+              className="text-blue-500 hover:underline"
+              onClick={handleAddTime}
+            >
+              + Add Time
+            </button>
+          </div>
 
           <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
             Submit
@@ -245,7 +250,6 @@ export default function Prescription() {
               <th className="px-4 py-2">Medicine</th>
               <th className="px-4 py-2">Start</th>
               <th className="px-4 py-2">End</th>
-              <th className="px-4 py-2">Recurring</th>
               <th className="px-4 py-2">Times</th>
               <th className="px-4 py-2">Days</th>
               <th className="px-4 py-2">Dose Status</th>
@@ -253,25 +257,36 @@ export default function Prescription() {
           </thead>
           <tbody>
             {prescriptions.map((p) => (
-              <tr key={p.prescriptionId} className="border-t">
+              <tr key={p.prescriptionId} className="border-t align-top">
                 <td className="px-4 py-2">{p.medicineName}</td>
                 <td className="px-4 py-2">{new Date(p.startDate).toLocaleDateString()}</td>
                 <td className="px-4 py-2">{new Date(p.endDate).toLocaleDateString()}</td>
                 <td className="px-4 py-2">
-                  {p.isRecurring ? `Every ${p.recurringIntervalHours} hrs` : "No"}
+                  <ul className="list-disc pl-4">
+                    {p.prescriptionTimes?.map((t, i) => (
+                      <li key={i}>{t.timeOfDay}</li>
+                    )) || "-"}
+                  </ul>
                 </td>
                 <td className="px-4 py-2">
-                  {p.prescriptionTimes?.map((t) => t.timeOfDay).join(", ") || "-"}
+                  <ul className="list-disc pl-4">
+                    {p.prescriptionDays?.map((d, i) => (
+                      <li key={i}>
+                        {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][d.dayOfWeek]}
+                      </li>
+                    )) || "-"}
+                  </ul>
                 </td>
                 <td className="px-4 py-2">
-                  {p.prescriptionDays?.map((d) => d.dayOfWeek).join(", ") || "-"}
-                </td>
-                <td className="px-4 py-2">
-                  {p.doseLogs?.length > 0
-                    ? p.doseLogs.map((log) =>
-                        log.takenTime ? "✅ Taken" : "⏰ Missed"
-                      ).join(", ")
-                    : "-"}
+                  <ul className="list-disc pl-4">
+                    {p.doseLogs?.length > 0
+                      ? p.doseLogs.map((log, i) => (
+                          <li key={i}>
+                            {log.takenTime ? `✅ Taken @ ${log.takenTime}` : `⏰ Missed (Scheduled ${log.scheduledDateTime})`}
+                          </li>
+                        ))
+                      : "-"}
+                  </ul>
                 </td>
               </tr>
             ))}
