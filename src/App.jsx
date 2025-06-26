@@ -14,6 +14,7 @@ import Prescription from "./pages/Prescription";
 import Patient from "./pages/Patient";
 import HowToUse from "./pages/HowToUse";
 import DashboardLayout from "./layouts/DashboardLayout";
+import EditProfile from './pages/EditProfile';
 
 export default function App() {
   return (
@@ -46,6 +47,14 @@ export default function App() {
             element={
               <ProtectedRoute role={localStorage.getItem("role")}>
                 <DashboardLayout><Profile /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-profile"
+            element={
+              <ProtectedRoute role={localStorage.getItem("role")}>
+                <DashboardLayout><EditProfile /></DashboardLayout>
               </ProtectedRoute>
             }
           />
