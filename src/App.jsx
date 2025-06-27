@@ -11,6 +11,7 @@ import PatientDashboard from "./pages/PatientDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import Profile from "./pages/Profile";
 import Prescription from "./pages/Prescription";
+import TodayPrescription from "./pages/TodayPrescription";
 import Patient from "./pages/Patient";
 import HowToUse from "./pages/HowToUse";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -39,6 +40,14 @@ export default function App() {
             element={
               <ProtectedRoute role="patient">
                 <DashboardLayout><Prescription /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/today-prescriptions"
+            element={
+              <ProtectedRoute role="patient">
+                <DashboardLayout><TodayPrescription /></DashboardLayout>
               </ProtectedRoute>
             }
           />
