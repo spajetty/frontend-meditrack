@@ -11,6 +11,15 @@ export default function TodayPrescription() {
   const [todayPrescriptions, setTodayPrescriptions] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
 
+  const markAsTaken = async (id) => {
+    try {
+      await axios.post(`https://localhost:7015/api/doselog/mark-taken/${id}`);
+      fetchToday(); // Refresh the list to update the status
+    } catch (err) {
+      console.error("Mark error:", err);
+    }
+  };
+
   // Fetch today's prescriptions
   const fetchToday = async () => {
     if (!user?.patientId) return;
@@ -87,14 +96,13 @@ export default function TodayPrescription() {
                   {log.status === "Missed" && "❌ Missed"}
                 </td>
                 <td className="px-4 py-2">
-                  {log.status === "Pending" && (
                     <button
-                      className="bg-green-500 text-white px-2 py-1 rounded"
-                      onClick={() => handleMarkTaken(log.doseLogId)}
+                        className="text-green-600 hover:underline"
+                        onClick={() => markAsTaken(log.doseLogId)}
+                        disabled={log.status === "Taken" || log.status === "Missed"}
                     >
-                      Mark as Taken
+                        Mark as Taken
                     </button>
-                  )}
                 </td>
               </tr>
             ))}
