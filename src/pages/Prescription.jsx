@@ -94,6 +94,18 @@ export default function Prescription() {
       console.log("Prescription added:", res.data);
       fetchPrescriptions();
       setShowForm(false);
+
+      setFormData({
+        medicineName: "",
+        instruction: "",
+        startDate: "",
+        endDate: "",
+        isRecurring: false,
+        recurringIntervalHours: "",
+        days: [],
+        times: [],
+      });
+
     } catch (err) {
       if (err.response?.data?.errors) {
         console.error("Validation errors:", err.response.data.errors);
@@ -232,7 +244,7 @@ export default function Prescription() {
               className="text-blue-500 hover:underline"
               onClick={handleAddTime}
             >
-              + Add Time
+              <span className="text-transparent">s</span><span className="font-bold">+ Add Time</span>
             </button>
           </div>
 
