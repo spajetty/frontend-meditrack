@@ -69,6 +69,13 @@ export default function Prescription() {
     }));
   };
 
+  const handleRemoveTime = (indexToRemove) => {
+    setFormData((prev) => ({
+      ...prev,
+      times: prev.times.filter((_, i) => i !== indexToRemove),
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -246,13 +253,48 @@ export default function Prescription() {
           <div>
             <label className="font-semibold">Time(s) to take medicine:</label>
             {formData.times.map((time, index) => (
-              <input
-                key={index}
-                type="time"
-                value={time}
-                onChange={(e) => handleTimeChange(index, e.target.value)}
-                className="w-full border p-2 rounded mb-2"
-              />
+              <>
+                <div className="w-12/12 flex flex-row flex-center">
+                  <div className="w-11/12 flex-center">
+                    <input
+                      key={index}
+                      type="time"
+                      value={time}
+                      onChange={(e) => handleTimeChange(index, e.target.value)}
+                      className="w-full border p-2 rounded mb-2"
+                    />
+                  </div>
+                  <div className="w-1/12 flex-center">
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTime(index)}
+                      className="hover:opacity-70"
+                      title="Remove time"
+                    >
+                      <svg
+                        width="28px"
+                        height="28px"
+                        viewBox="-2.16 -2.16 28.32 28.32"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        stroke="#d81313"
+                        strokeWidth="1.176"
+                      >
+                        <path
+                          d="M15 12.75C15.4142 12.75 15.75 12.4142 15.75 12C15.75 11.5858 15.4142 11.25 15 11.25H9C8.58579 11.25 8.25 11.5858 8.25 12C8.25 12.4142 8.58579 12.75 9 12.75H15Z"
+                          fill="#d81313"
+                        />
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12Z"
+                          fill="#d81313"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </>
             ))}
             <button
               type="button"
