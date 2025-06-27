@@ -91,9 +91,7 @@ export default function TodayPrescription() {
                   {new Date(log.scheduledDateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </td>
                 <td className="px-4 py-2">
-                  {log.status === "Pending" && "⏰ Pending"}
-                  {log.status === "Taken" && "✅ Taken"}
-                  {log.status === "Missed" && "❌ Missed"}
+                  {log.status === 0 ? "Pending" : log.status === 1 ? "Taken" : "Missed"}
                 </td>
                 <td className="px-4 py-2">
                     <button
