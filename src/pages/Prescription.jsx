@@ -121,7 +121,22 @@ export default function Prescription() {
         <h2 className="text-xl font-semibold">Your Prescriptions</h2>
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => {
+            if (showForm) {
+              // Reset form when closing
+              setFormData({
+                medicineName: "",
+                instruction: "",
+                startDate: "",
+                endDate: "",
+                isRecurring: false,
+                recurringIntervalHours: "",
+                days: [],
+                times: [],
+              });
+            }
+            setShowForm(!showForm);
+          }}
         >
           {showForm ? "Close" : "Add Prescription"}
         </button>
