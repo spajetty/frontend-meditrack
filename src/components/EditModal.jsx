@@ -1,0 +1,83 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+
+export default function EditModal({ prescription, onClose, onSaved }) {
+  const { user } = useAuth();
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    setFormData({
+      medicineName: prescription.medicineName,
+      instruction: prescription.instruction,
+      startDate: prescription.startDate.split("T")[0],
+      endDate: prescription.endDate.split("T")[0],
+      days: prescription.prescriptionDays?.map(d => ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][d.dayOfWeek]) || [],
+      times: prescription.prescriptionTimes?.map(t => t.timeOfDay) || [],
+    });
+  }, [prescription]);
+
+  const update = (key, val) => setFormData(f => ({ ...f, [key]: val }));
+  const toggleDay = (day) => {
+    update("days", formData.days.includes(day)
+      ? formData.days.filter(d => d !== day)
+      : [...formData.days, day]);
+  };
+  const changeTime = (i, val) => {
+    const arr = [...formData.times]; arr[i] = val;
+    update("times", arr);
+  };
+  const remTime = (i) => update("times", formData.times.filter((_,j) => j!==i));
+  const addTime = () => update("times", [...formData.times, ""]);
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const payload = {
+      ...formData,
+      patientId: user.patientId,
+      days: formData.days.map(day => ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(day)),
+    };
+    await axios.put(`https://localhost:7015/api/prescriptions/${prescription.prescriptionId}`, payload);
+    onSaved();
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+      <form onSubmit={handleSave} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md space-y-4">
+        <h2 className="text-xl font-semibold">Edit Prescription</h2>
+        {/* similar fields as FormModal */}
+        <input type="text" name="medicineName" value={formData.medicineName} onChange={e => update("medicineName", e.target.value)} required className="w-full border p-2 rounded"/>
+        <textarea name="instruction" value={formData.instruction} onChange={e => update("instruction", e.target.value)} required className="w-full border p-2 rounded"/>
+        <div className="flex gap-4">
+          <input type="date" name="startDate" value={formData.startDate} onChange={e => update("startDate", e.target.value)} className="flex-1 border p-2 rounded"/>
+          <input type="date" name="endDate" value={formData.endDate} onChange={e => update("endDate", e.target.value)} className="flex-1 border p-2 rounded"/>
+        </div>
+
+        <label className="font-semibold">Select Days:</label>
+        <div className="grid grid-cols-3 gap-2">
+          {["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].map(day => (
+            <label key={day} className="flex items-center">
+              <input type="checkbox" checked={formData.days?.includes(day)} onChange={() => toggleDay(day)} />
+              <span className="ml-1">{day}</span>
+            </label>
+          ))}
+        </div>
+
+        <label className="font-semibold">Time(s):</label>
+        {formData.times?.map((t,i) => (
+          <div key={i} className="flex items-center gap-2">
+            <input type="time" value={t} onChange={e => changeTime(i, e.target.value)} className="border p-2 rounded flex-1"/>
+            <button type="button" onClick={() => remTime(i)} className="text-red-500">×</button>
+          </div>
+        ))}
+        <button type="button" onClick={addTime} className="text-blue-500 hover:underline">+ Add Time</button>
+
+        <div className="flex justify-end gap-2">
+          <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">Save</button>
+        </div>
+      </form>
+    </div>
+  );
+}
