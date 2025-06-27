@@ -8,12 +8,15 @@ export default function EditModal({ prescription, onClose, onSaved }) {
 
   useEffect(() => {
     setFormData({
-      medicineName: prescription.medicineName,
-      instruction: prescription.instruction,
-      startDate: prescription.startDate.split("T")[0],
-      endDate: prescription.endDate.split("T")[0],
-      days: prescription.prescriptionDays?.map(d => ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][d.dayOfWeek]) || [],
-      times: prescription.prescriptionTimes?.map(t => t.timeOfDay) || [],
+      medicineName: prescription.medicineName || "",
+      instruction: prescription.instruction || "",
+      startDate: prescription.startDate?.split("T")[0] || "",
+      endDate: prescription.endDate?.split("T")[0] || "",
+      days: (prescription.prescriptionDays || []).map(d => 
+        ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][d.dayOfWeek]
+      ),
+      times: (prescription.prescriptionTimes || []).map(t => t.timeOfDay),
+      isRecurring: prescription.isRecurring || false
     });
   }, [prescription]);
 
@@ -32,14 +35,29 @@ export default function EditModal({ prescription, onClose, onSaved }) {
 
   const handleSave = async (e) => {
     e.preventDefault();
+
     const payload = {
-      ...formData,
+      medicineName: formData.medicineName,
+      instruction: formData.instruction,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      isRecurring: formData.isRecurring,
       patientId: user.patientId,
-      days: formData.days.map(day => ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(day)),
+      times: formData.times, // time strings
+      days: !formData.isRecurring
+        ? formData.days.map(day =>
+            ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(day)
+          )
+        : []
     };
-    await axios.put(`https://localhost:7015/api/prescriptions/${prescription.prescriptionId}`, payload);
-    onSaved();
-    onClose();
+
+    try {
+      await axios.put(`https://localhost:7015/api/prescriptions/${prescription.prescriptionId}`, payload);
+      onSaved();
+      onClose();
+    } catch (err) {
+      console.error("Edit failed:", err);
+    }
   };
 
   return (
@@ -47,11 +65,11 @@ export default function EditModal({ prescription, onClose, onSaved }) {
       <form onSubmit={handleSave} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md space-y-4">
         <h2 className="text-xl font-semibold">Edit Prescription</h2>
         {/* similar fields as FormModal */}
-        <input type="text" name="medicineName" value={formData.medicineName} onChange={e => update("medicineName", e.target.value)} required className="w-full border p-2 rounded"/>
-        <textarea name="instruction" value={formData.instruction} onChange={e => update("instruction", e.target.value)} required className="w-full border p-2 rounded"/>
+        <input type="text" name="medicineName" value={formData.medicineName || ""} onChange={e => update("medicineName", e.target.value)} required className="w-full border p-2 rounded"/>
+        <textarea name="instruction" value={formData.instruction || ""} onChange={e => update("instruction", e.target.value)} required className="w-full border p-2 rounded"/>
         <div className="flex gap-4">
-          <input type="date" name="startDate" value={formData.startDate} onChange={e => update("startDate", e.target.value)} className="flex-1 border p-2 rounded"/>
-          <input type="date" name="endDate" value={formData.endDate} onChange={e => update("endDate", e.target.value)} className="flex-1 border p-2 rounded"/>
+          <input type="date" name="startDate" value={formData.startDate || ""} onChange={e => update("startDate", e.target.value)} className="flex-1 border p-2 rounded"/>
+          <input type="date" name="endDate" value={formData.endDate || ""} onChange={e => update("endDate", e.target.value)} className="flex-1 border p-2 rounded"/>
         </div>
 
         <label className="font-semibold">Select Days:</label>
@@ -67,7 +85,7 @@ export default function EditModal({ prescription, onClose, onSaved }) {
         <label className="font-semibold">Time(s):</label>
         {formData.times?.map((t,i) => (
           <div key={i} className="flex items-center gap-2">
-            <input type="time" value={t} onChange={e => changeTime(i, e.target.value)} className="border p-2 rounded flex-1"/>
+            <input type="time" value={t || ""} onChange={e => changeTime(i, e.target.value)} className="border p-2 rounded flex-1"/>
             <button type="button" onClick={() => remTime(i)} className="text-red-500">×</button>
           </div>
         ))}
