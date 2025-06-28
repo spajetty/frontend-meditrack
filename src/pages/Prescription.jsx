@@ -60,6 +60,7 @@ export default function Prescription() {
               <th className="px-4 py-2">Dosage</th>
               <th className="px-4 py-2">Times</th>
               <th className="px-4 py-2">Days</th>
+              <th className="px-4 py-2">Status</th>
               <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
