@@ -81,11 +81,28 @@ export default function EditModal({ prescription, onClose, onSaved }) {
           required
           className="w-full border p-2 rounded"
         />
-        <div className="flex gap-4">
-          <input type="date" name="startDate" value={formData.startDate || ""} onChange={e => update("startDate", e.target.value)} className="flex-1 border p-2 rounded"/>
-          <input type="date" name="endDate" value={formData.endDate || ""} onChange={e => update("endDate", e.target.value)} className="flex-1 border p-2 rounded"/>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="w-full sm:flex-1">
+            <label>Start Date</label>
+            <input
+              type="date"
+              name="startDate"
+              value={formData.startDate || ""}
+              onChange={e => update("startDate", e.target.value)}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+          <div className="w-full sm:flex-1">
+            <label>End Date</label>
+            <input
+              type="date"
+              name="endDate"
+              value={formData.endDate || ""}
+              onChange={e => update("endDate", e.target.value)}
+              className="w-full border p-2 rounded"
+            />
+          </div>
         </div>
-
         <label className="font-semibold">Select Days:</label>
         <div className="grid grid-cols-3 gap-2">
           {["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].map(day => (
