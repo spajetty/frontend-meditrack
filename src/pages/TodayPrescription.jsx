@@ -93,6 +93,7 @@ export default function TodayPrescription() {
                     year: "numeric",
                   })}
                 </td>
+                <td className="px-4 py-2">{log.prescription.dosage}</td>
                 <td className="px-4 py-2">
                   {new Date(log.scheduledDateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </td>
