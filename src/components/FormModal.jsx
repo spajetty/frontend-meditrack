@@ -92,10 +92,10 @@ export default function FormModal({ onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 px-2 py-4 sm:px-4">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg space-y-4"
+        className="bg-white p-6 rounded-lg shadow-lg lg:w-[50%] md:w-[60%] sm:w-[90%] max-w-[95%] max-h-[90vh] overflow-y-auto space-y-4 sm:max-w-[95%]"
       >
         <h2 className="text-xl font-semibold text-gray-700 mb-2">Add Prescription</h2>
 
@@ -125,8 +125,8 @@ export default function FormModal({ onClose, onSaved }) {
           className="w-full border p-2 rounded"
           required
         />
-        <div className="flex gap-4">
-          <div className="flex-1">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="w-full sm:flex-1">
             <label>Start Date</label>
             <input
               type="date"
@@ -136,7 +136,7 @@ export default function FormModal({ onClose, onSaved }) {
               className="w-full border p-2 rounded"
             />
           </div>
-          <div className="flex-1">
+          <div className="w-full sm:flex-1">
             <label>End Date</label>
             <input
               type="date"
@@ -147,7 +147,6 @@ export default function FormModal({ onClose, onSaved }) {
             />
           </div>
         </div>
-
         <div>
           <label className="font-semibold">Schedule Type:</label>
           <div className="flex gap-4 mt-2">
