@@ -56,8 +56,7 @@ export default function Prescription() {
             <tr className="bg-emerald-100 text-left">
               <th className="px-4 py-2">Medicine</th>
               <th className="px-4 py-2">Instruction</th>
-              <th className="px-4 py-2">Start</th>
-              <th className="px-4 py-2">End</th>
+              <th className="px-4 py-2">Duration</th>
               <th className="px-4 py-2">Times</th>
               <th className="px-4 py-2">Days</th>
               <th className="px-4 py-2">Action</th>
@@ -68,8 +67,18 @@ export default function Prescription() {
               <tr key={p.prescriptionId} className="border-t">
                 <td className="px-4 py-2">{p.medicineName}</td>
                 <td className="px-4 py-2">{p.instruction}</td>
-                <td className="px-4 py-2">{new Date(p.startDate).toLocaleDateString()}</td>
-                <td className="px-4 py-2">{new Date(p.endDate).toLocaleDateString()}</td>
+                <td className="px-4 py-2">
+                  {new Date(p.startDate).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })} -{" "}
+                  {new Date(p.endDate).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </td>
                 <td className="px-4 py-2">
                   <ul className="list-disc pl-4">
                     {p.prescriptionTimes?.map((t, i) => <li key={i}>{t.timeOfDay}</li>) || "-"}
