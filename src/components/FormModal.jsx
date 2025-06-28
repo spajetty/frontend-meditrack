@@ -8,6 +8,7 @@ export default function FormModal({ onClose, onSaved }) {
   const [formData, setFormData] = useState({
     medicineName: "",
     instruction: "",
+    dosage: "",
     startDate: "",
     endDate: "",
     scheduleType: "daily", // 'daily' or 'custom'
@@ -66,6 +67,7 @@ export default function FormModal({ onClose, onSaved }) {
     const payload = {
       medicineName: formData.medicineName,
       instruction: formData.instruction,
+      dosage: formData.dosage,
       startDate: formData.startDate,
       endDate: formData.endDate,
       patientId: user.patientId,
@@ -114,7 +116,15 @@ export default function FormModal({ onClose, onSaved }) {
           className="w-full border p-2 rounded"
           required
         />
-
+        <input
+          type="text"
+          name="dosage"
+          placeholder="Dosage (e.g. 130 mg, 75g)"
+          value={formData.dosage}
+          onChange={handleInputChange}
+          className="w-full border p-2 rounded"
+          required
+        />
         <div className="flex gap-4">
           <div className="flex-1">
             <label>Start Date</label>
