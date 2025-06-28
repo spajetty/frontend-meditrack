@@ -95,6 +95,11 @@ export default function Prescription() {
                     }) || "-"}
                   </ul>
                 </td>
+                <td className="px-4 py-2">
+                  {new Date(p.endDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
+                    ? "Finished"
+                    : "Ongoing"}
+                </td>
                 <td className="px-4 py-2 flex gap-2">
                   <button className="text-blue-600 hover:underline" onClick={() => setEditing(p)}>Edit</button>
                   <button className="text-red-600 hover:underline" onClick={() => handleDelete(p.prescriptionId)}>Delete</button>
