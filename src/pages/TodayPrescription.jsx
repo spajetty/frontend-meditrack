@@ -80,7 +80,7 @@ export default function TodayPrescription() {
             {todayPrescriptions.map((log) => (
               <tr key={log.doseLogId} className="border-t">
                 <td className="px-4 py-2">{log.prescription.medicineName}</td>
-                <td className="px-4 py-2">{log.prescription.instruction}</td>
+                <td className="px-4 py-2 w-50">{log.prescription.instruction}</td>
                 <td className="px-4 py-2">
                   {new Date(log.prescription.startDate).toLocaleDateString("en-US", {
                     month: "long",

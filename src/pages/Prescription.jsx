@@ -68,7 +68,7 @@ export default function Prescription() {
             {prescriptions.map((p) => (
               <tr key={p.prescriptionId} className="border-t">
                 <td className="px-4 py-2">{p.medicineName}</td>
-                <td className="px-4 py-2">{p.instruction}</td>
+                <td className="px-4 py-2 w-50">{p.instruction}</td>
                 <td className="px-4 py-2">
                   {new Date(p.startDate).toLocaleDateString("en-US", {
                     month: "long",
