@@ -10,6 +10,7 @@ export default function EditModal({ prescription, onClose, onSaved }) {
     setFormData({
       medicineName: prescription.medicineName || "",
       instruction: prescription.instruction || "",
+      dosage: prescription.dosage || "",
       startDate: prescription.startDate?.split("T")[0] || "",
       endDate: prescription.endDate?.split("T")[0] || "",
       days: (prescription.prescriptionDays || []).map(d => 
@@ -39,6 +40,7 @@ export default function EditModal({ prescription, onClose, onSaved }) {
     const payload = {
       medicineName: formData.medicineName,
       instruction: formData.instruction,
+      dosage: formData.dosage,
       startDate: formData.startDate,
       endDate: formData.endDate,
       isRecurring: formData.isRecurring,
@@ -67,6 +69,15 @@ export default function EditModal({ prescription, onClose, onSaved }) {
         {/* similar fields as FormModal */}
         <input type="text" name="medicineName" value={formData.medicineName || ""} onChange={e => update("medicineName", e.target.value)} required className="w-full border p-2 rounded"/>
         <textarea name="instruction" value={formData.instruction || ""} onChange={e => update("instruction", e.target.value)} required className="w-full border p-2 rounded"/>
+        <input
+          type="text"
+          name="dosage"
+          value={formData.dosage}
+          onChange={e => update("dosage", e.target.value)}
+          placeholder="Dosage (e.g. 130 mg, 75g)"
+          required
+          className="w-full border p-2 rounded"
+        />
         <div className="flex gap-4">
           <input type="date" name="startDate" value={formData.startDate || ""} onChange={e => update("startDate", e.target.value)} className="flex-1 border p-2 rounded"/>
           <input type="date" name="endDate" value={formData.endDate || ""} onChange={e => update("endDate", e.target.value)} className="flex-1 border p-2 rounded"/>
