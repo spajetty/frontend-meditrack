@@ -63,8 +63,11 @@ export default function EditModal({ prescription, onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <form onSubmit={handleSave} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md space-y-4">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 px-2 py-4 sm:px-4">
+      <form 
+        onSubmit={handleSave} 
+        className="bg-white p-6 rounded-lg shadow-lg lg:w-[50%] md:w-[60%] sm:w-[90%] max-w-[95%] max-h-[90vh] overflow-y-auto space-y-4 sm:max-w-[95%]"
+      >
         <h2 className="text-xl font-semibold">Edit Prescription</h2>
         {/* similar fields as FormModal */}
         <input type="text" name="medicineName" value={formData.medicineName || ""} onChange={e => update("medicineName", e.target.value)} required className="w-full border p-2 rounded"/>
