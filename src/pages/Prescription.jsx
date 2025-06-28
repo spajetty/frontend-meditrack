@@ -80,6 +80,7 @@ export default function Prescription() {
                     year: "numeric",
                   })}
                 </td>
+                <td className="px-4 py-2">{p.dosage || "-"}</td>
                 <td className="px-4 py-2">
                   <ul className="list-disc pl-4">
                     {p.prescriptionTimes?.map((t, i) => <li key={i}>{t.timeOfDay}</li>) || "-"}
