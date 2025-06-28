@@ -72,7 +72,7 @@ export default function Prescription() {
                     month: "long",
                     day: "numeric",
                     year: "numeric",
-                  })} -{" "}
+                  })} -{" "} <br />
                   {new Date(p.endDate).toLocaleDateString("en-US", {
                     month: "long",
                     day: "numeric",
