@@ -38,9 +38,13 @@ export default function TodayPrescription() {
     load();
   }, [user]);
 
-  const handleMarkTaken = async (logId) => {
-    await axios.post(`https://localhost:7015/api/doselog/${logId}/mark-taken`);
-    fetchToday();
+  const undoDose = async (id) => {
+    try {
+      await axios.post(`https://localhost:7015/api/doselog/undo/${id}`);
+      fetchToday();
+    } catch (err) {
+      console.error("Undo error:", err);
+    }
   };
 
   return (
@@ -100,13 +104,29 @@ export default function TodayPrescription() {
                 <td className="px-4 py-2">
                   {log.status === 0 ? "Pending" : log.status === 1 ? "Taken" : "Missed"}
                 </td>
-                <td className="px-4 py-2">
-                  {log.status !== 1 && (
+                <td className="px-4 py-2 text-center">
+                  {log.status === 0 && (
                     <button
                       className="text-green-600 hover:underline"
                       onClick={() => markAsTaken(log.doseLogId)}
                     >
-                      {log.status === 2 ? "Mark as Taken (Late)" : "Mark as Taken"}
+                      Mark as Taken
+                    </button>
+                  )}
+                  {log.status === 2 && (
+                    <button
+                      className="text-green-600 hover:underline"
+                      onClick={() => markAsTaken(log.doseLogId)}
+                    >
+                      Mark as Taken (Late)
+                    </button>
+                  )}
+                  {log.status === 1 && (
+                    <button
+                      className="text-yellow-600 hover:underline"
+                      onClick={() => undoDose(log.doseLogId)}
+                    >
+                      Undo
                     </button>
                   )}
                 </td>
