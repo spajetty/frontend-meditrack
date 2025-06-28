@@ -69,8 +69,7 @@ export default function TodayPrescription() {
             <tr className="bg-emerald-100 text-left">
               <th className="px-4 py-2">Medicine</th>
               <th className="px-4 py-2">Instruction</th>
-              <th className="px-4 py-2">Start</th>
-              <th className="px-4 py-2">End</th>
+              <th className="px-4 py-2">Duration</th>
               <th className="px-4 py-2">Hour Intake</th>
               <th className="px-4 py-2">Status</th>
               <th className="px-4 py-2">Action</th>
@@ -82,10 +81,16 @@ export default function TodayPrescription() {
                 <td className="px-4 py-2">{log.prescription.medicineName}</td>
                 <td className="px-4 py-2">{log.prescription.instruction}</td>
                 <td className="px-4 py-2">
-                  {new Date(log.prescription.startDate).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-2">
-                  {new Date(log.prescription.endDate).toLocaleDateString()}
+                  {new Date(log.prescription.startDate).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })} -{" "} <br />
+                  {new Date(log.prescription.endDate).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
                 </td>
                 <td className="px-4 py-2">
                   {new Date(log.scheduledDateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
