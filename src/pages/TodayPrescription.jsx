@@ -70,6 +70,7 @@ export default function TodayPrescription() {
               <th className="px-4 py-2">Medicine</th>
               <th className="px-4 py-2">Instruction</th>
               <th className="px-4 py-2">Duration</th>
+              <th className="px-4 py-2">Dosage</th>
               <th className="px-4 py-2">Hour Intake</th>
               <th className="px-4 py-2">Status</th>
               <th className="px-4 py-2">Action</th>
