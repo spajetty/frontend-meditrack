@@ -101,13 +101,14 @@ export default function TodayPrescription() {
                   {log.status === 0 ? "Pending" : log.status === 1 ? "Taken" : "Missed"}
                 </td>
                 <td className="px-4 py-2">
+                  {log.status !== 1 && (
                     <button
-                        className="text-green-600 hover:underline"
-                        onClick={() => markAsTaken(log.doseLogId)}
-                        disabled={log.status === "Taken" || log.status === "Missed"}
+                      className="text-green-600 hover:underline"
+                      onClick={() => markAsTaken(log.doseLogId)}
                     >
-                        Mark as Taken
+                      {log.status === 2 ? "Mark as Taken (Late)" : "Mark as Taken"}
                     </button>
+                  )}
                 </td>
               </tr>
             ))}
