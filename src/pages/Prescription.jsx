@@ -53,7 +53,7 @@ export default function Prescription() {
       <div className="overflow-x-auto">
         <table className="w-full table-auto bg-white rounded shadow">
           <thead>
-            <tr className="bg-emerald-100 text-left">
+            <tr className="bg-emerald-100 text-center">
               <th className="px-4 py-2">Medicine</th>
               <th className="px-4 py-2">Instruction</th>
               <th className="px-4 py-2">Duration</th>
@@ -73,7 +73,7 @@ export default function Prescription() {
               </tr>
             ) : (
               prescriptions.map((p) => (
-                <tr key={p.prescriptionId} className="border-t">
+                <tr key={p.prescriptionId} className="border-t text-center">
                   <td className="px-4 py-2">{p.medicineName}</td>
                   <td className="px-4 py-2 w-50">{p.instruction}</td>
                   <td className="px-4 py-2">
@@ -107,7 +107,7 @@ export default function Prescription() {
                       ? "Finished"
                       : "Ongoing"}
                   </td>
-                  <td className="px-4 py-2 flex gap-2 flex-wrap">
+                  <td className="px-4 py-2 flex gap-2 flex-wrap flex-center">
                     <button
                       className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
                       onClick={() => setEditing(p)}
