@@ -108,9 +108,24 @@ export default function Prescription() {
                       : "Ongoing"}
                   </td>
                   <td className="px-4 py-2 flex gap-2 flex-wrap">
-                    <button className="text-blue-600 hover:underline" onClick={() => setEditing(p)}>Edit</button>
-                    <button className="text-red-600 hover:underline" onClick={() => handleDelete(p.prescriptionId)}>Delete</button>
-                    <button className="text-purple-600 hover:underline" onClick={() => setViewingHistoryId(p.prescriptionId)}>History</button>
+                    <button
+                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+                      onClick={() => setEditing(p)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                      onClick={() => handleDelete(p.prescriptionId)}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition"
+                      onClick={() => setViewingHistoryId(p.prescriptionId)}
+                    >
+                      History
+                    </button>
                   </td>
                 </tr>
               ))
