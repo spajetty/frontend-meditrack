@@ -72,7 +72,7 @@ export default function TodayPrescription() {
       <div className="overflow-x-auto">
         <table className="w-full table-auto bg-white rounded shadow">
           <thead>
-            <tr className="bg-emerald-100 text-left">
+            <tr className="bg-emerald-100 text-center">
               <th className="px-4 py-2">Medicine</th>
               <th className="px-4 py-2">Instruction</th>
               <th className="px-4 py-2">Duration</th>
@@ -91,7 +91,7 @@ export default function TodayPrescription() {
               </tr>
               ) : (
                 todayPrescriptions.map((log) => (
-                  <tr key={log.doseLogId} className="border-t">
+                  <tr key={log.doseLogId} className="border-t text-center">
                   <td className="px-4 py-2">{log.prescription.medicineName}</td>
                   <td className="px-4 py-2 w-50">{log.prescription.instruction}</td>
                   <td className="px-4 py-2">
