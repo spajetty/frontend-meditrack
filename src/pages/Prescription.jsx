@@ -65,7 +65,14 @@ export default function Prescription() {
             </tr>
           </thead>
           <tbody>
-            {prescriptions.map((p) => (
+            {prescriptions.length === 0 ? (
+              <tr>
+                <td colSpan="7" className="text-center py-4 text-gray-500">
+                  Nothing to display yet.
+                </td>
+              </tr>
+            ) : (
+              prescriptions.map((p) => (
               <tr key={p.prescriptionId} className="border-t">
                 <td className="px-4 py-2">{p.medicineName}</td>
                 <td className="px-4 py-2 w-50">{p.instruction}</td>
@@ -105,7 +112,7 @@ export default function Prescription() {
                   <button className="text-red-600 hover:underline" onClick={() => handleDelete(p.prescriptionId)}>Delete</button>
                 </td>
               </tr>
-            ))}
+            )))}
           </tbody>
         </table>
       </div>
