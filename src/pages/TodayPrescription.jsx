@@ -116,7 +116,7 @@ export default function TodayPrescription() {
                   <td className="px-4 py-2 text-center space-y-1">
                     {log.status === 0 && (
                       <button
-                        className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
+                        className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition w-39"
                         onClick={() => markAsTaken(log.doseLogId)}
                       >
                         Mark as Taken
@@ -124,7 +124,7 @@ export default function TodayPrescription() {
                     )}
                     {log.status === 2 && (
                       <button
-                        className="bg-red-700 text-white px-3 py-1 rounded hover:bg-red-500 transition"
+                        className="bg-red-700 text-white px-3 py-1 rounded hover:bg-red-500 transition w-39"
                         onClick={() => markAsTaken(log.doseLogId)}
                       >
                         Taken but Late
@@ -132,7 +132,7 @@ export default function TodayPrescription() {
                     )}
                     {log.status === 1 && (
                       <button
-                        className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+                        className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition w-39"
                         onClick={() => undoDose(log.doseLogId)}
                       >
                         Undo
