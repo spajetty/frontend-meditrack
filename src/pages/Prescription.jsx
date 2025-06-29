@@ -38,8 +38,10 @@ export default function Prescription() {
 
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">All Prescriptions</h2>
+      <div className="flex justify-between items-center mb-4 md:flex-row flex-col">
+        <div className="flex-center">
+          <h2 className="text-xl font-semibold">All Prescriptions</h2>
+        </div>
         <div className="flex gap-2">
           <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={() => navigate("/today-prescriptions")}>
             See Today
