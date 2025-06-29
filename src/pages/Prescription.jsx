@@ -165,7 +165,7 @@ function HistoryModal({ prescriptionId, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[90%]] max-w-lg max-h-[80vh] overflow-auto">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-lg max-h-[80vh] overflow-auto">
         <h2 className="text-xl font-semibold mb-4">Dose History</h2>
         <table className="w-full table-auto border">
           <thead>
