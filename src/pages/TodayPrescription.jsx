@@ -127,7 +127,7 @@ export default function TodayPrescription() {
                         className="bg-red-700 text-white px-3 py-1 rounded hover:bg-red-500 transition"
                         onClick={() => markAsTaken(log.doseLogId)}
                       >
-                        Mark as Taken (Late)
+                        Taken but Late
                       </button>
                     )}
                     {log.status === 1 && (
