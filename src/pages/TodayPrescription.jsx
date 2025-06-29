@@ -135,7 +135,7 @@ export default function TodayPrescription() {
                         className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition w-39"
                         onClick={() => undoDose(log.doseLogId)}
                       >
-                        Undo
+                        Undo Action
                       </button>
                     )}
                   </td>
