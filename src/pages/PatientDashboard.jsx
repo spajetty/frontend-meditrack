@@ -12,8 +12,11 @@ export default function PatientDashboard() {
         <h1 className="text-4xl font-bold">Welcome to <span className="text-emerald-500">Medi</span>
             <span className="text-cyan-500">Track</span>, {user.fullName}!</h1>
       </div><br />
+      <p className="font-medium italic text-lg underline">
+        We help track your meds, not your browser history, you're safe here :)
+      </p><br />
       <div>
-        <img src={banner} alt="" className="lg:w-xl md:w-lg sm:w-lg w-sm"/>
+        <img src={banner} alt="" className="sm:w-lg w-sm"/>
       </div><br /><br />
       <div className="flex flex-wrap gap-4 mb-4">
         <button
