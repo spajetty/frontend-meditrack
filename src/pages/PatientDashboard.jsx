@@ -18,7 +18,7 @@ export default function PatientDashboard() {
       <div>
         <img src={banner} alt="" className="sm:w-lg w-sm"/>
       </div><br /><br />
-      <div className="flex flex-wrap gap-4 mb-4">
+      <div className="flex flex-wrap gap-4 mb-4 text-center flex-center">
         <button
           onClick={() => navigate("/today-prescriptions")}
           className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-md transition"
