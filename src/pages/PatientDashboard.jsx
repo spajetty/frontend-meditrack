@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import banner from '../assets/bg-meditrack.png';
 import { useAuth } from "../context/AuthContext";
 
 export default function PatientDashboard() {
@@ -9,6 +10,9 @@ export default function PatientDashboard() {
       <div>
         <h1 className="text-4xl font-bold">Welcome to <span className="text-emerald-500">Medi</span>
             <span className="text-cyan-500">Track</span>, {user.fullName}!</h1>
+      </div>
+      <div>
+        <img src={banner} alt="" className="lg:w-xl md:w-lg sm:w-lg w-sm"/>
       </div>
     </div>
   );
