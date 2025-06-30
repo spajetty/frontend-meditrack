@@ -60,14 +60,6 @@ export default function App() {
             }
           />
           <Route
-            path="/edit-profile"
-            element={
-              <ProtectedRoute>
-                <DashboardLayout><EditProfile /></DashboardLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/how-to-use"
             element={
               <ProtectedRoute>
