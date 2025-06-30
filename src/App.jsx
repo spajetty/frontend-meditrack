@@ -54,7 +54,7 @@ export default function App() {
           <Route
             path="/profile"
             element={
-              <ProtectedRoute role={localStorage.getItem("role")}>
+              <ProtectedRoute>
                 <DashboardLayout><Profile /></DashboardLayout>
               </ProtectedRoute>
             }
@@ -62,7 +62,7 @@ export default function App() {
           <Route
             path="/edit-profile"
             element={
-              <ProtectedRoute role={localStorage.getItem("role")}>
+              <ProtectedRoute>
                 <DashboardLayout><EditProfile /></DashboardLayout>
               </ProtectedRoute>
             }
@@ -70,7 +70,7 @@ export default function App() {
           <Route
             path="/how-to-use"
             element={
-              <ProtectedRoute role={localStorage.getItem("role")}>
+              <ProtectedRoute>
                 <DashboardLayout><HowToUse /></DashboardLayout>
               </ProtectedRoute>
             }
