@@ -10,7 +10,7 @@ export default function DoctorDashboard() {
     <div className="text-center flex-center px-4 py-8 flex-col">
       <div>
         <h1 className="text-4xl font-bold">Welcome to <span className="text-emerald-500">Medi</span>
-            <span className="text-cyan-500">Track</span>, {user.fullName}!</h1>
+            <span className="text-cyan-500">Track</span>, Dr. {user.fullName}!</h1>
       </div><br />
       <p className="font-medium italic text-lg underline">
         We help track your meds, not your browser history, you're safe here :)
