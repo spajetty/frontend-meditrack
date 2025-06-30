@@ -11,6 +11,7 @@ import PatientDashboard from "./pages/PatientDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import Profile from "./pages/Profile";
 import Prescription from "./pages/Prescription";
+import TodayPrescription from "./pages/TodayPrescription";
 import Patient from "./pages/Patient";
 import HowToUse from "./pages/HowToUse";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -43,17 +44,33 @@ export default function App() {
             }
           />
           <Route
+            path="/today-prescriptions"
+            element={
+              <ProtectedRoute role="patient">
+                <DashboardLayout><TodayPrescription /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/profile"
             element={
-              <ProtectedRoute role={localStorage.getItem("role")}>
+              <ProtectedRoute>
                 <DashboardLayout><Profile /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-profile"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout><EditProfile /></DashboardLayout>
               </ProtectedRoute>
             }
           />
           <Route
             path="/how-to-use"
             element={
-              <ProtectedRoute role={localStorage.getItem("role")}>
+              <ProtectedRoute>
                 <DashboardLayout><HowToUse /></DashboardLayout>
               </ProtectedRoute>
             }

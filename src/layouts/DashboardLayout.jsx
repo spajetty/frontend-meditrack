@@ -15,7 +15,7 @@ export default function DashboardLayout({ children }) {
       </div>
 
       {/* Main content for mobile */}
-      <div className="flex-1 flex flex-col overflow-y-auto bg-gray-50">
+      <div className="flex-1 flex flex-col overflow-y-auto bg-gray-200">
         {/* Top navbar for mobile */}
         <div className="md:hidden bg-dark-teal text-white flex items-center justify-between p-3">
           {/* Hamburger button */}

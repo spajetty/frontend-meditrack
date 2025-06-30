@@ -1,8 +1,37 @@
+import { useNavigate } from "react-router-dom";
+import banner from '../assets/bg-meditrack.png';
+import { useAuth } from "../context/AuthContext";
+
 export default function DoctorDashboard() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4">Welcome, Doctor!</h2>
-      <p>Your prescriptions, appointments, and more will be displayed here.</p>
+    <div className="text-center flex-center px-4 py-8 flex-col">
+      <div>
+        <h1 className="text-4xl font-bold">Welcome to <span className="text-emerald-500">Medi</span>
+            <span className="text-cyan-500">Track</span>, Dr. {user.fullName}!</h1>
+      </div><br />
+      <p className="font-medium italic text-lg underline">
+        We help track your meds, not your browser history, you're safe here :)
+      </p><br />
+      <div>
+        <img src={banner} alt="" className="sm:w-lg w-sm"/>
+      </div><br /><br />
+      <div className="flex flex-wrap gap-4 mb-4 text-center flex-center">
+        <button
+          onClick={() => navigate("/patients")}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md transition"
+        >
+          List of Patients
+        </button>
+        <button
+          onClick={() => navigate("/how-to-use")}
+          className="bg-purple-500 hover:bg-purple-600 text-white px-5 py-2 rounded-md transition"
+        >
+          How to Use
+        </button>
+      </div>
     </div>
   );
 }

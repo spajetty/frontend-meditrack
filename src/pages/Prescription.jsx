@@ -1,30 +1,22 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import FormModal from "../components/FormModal";
+import EditModal from "../components/EditModal";
+import { useNavigate } from "react-router-dom";
 
 export default function Prescription() {
   const { user } = useAuth();
-  //console.log("user from context:", user);
+  const navigate = useNavigate();
 
   const [prescriptions, setPrescriptions] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-
-  const [formData, setFormData] = useState({
-    medicineName: "",
-    instruction: "",
-    startDate: "",
-    endDate: "",
-    scheduleType: "daily", // 'daily' or 'custom'
-    days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-    times: [],
-  });
+  const [showAdd, setShowAdd] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [viewingHistoryId, setViewingHistoryId] = useState(null);
 
   const fetchPrescriptions = async () => {
+    if (!user?.patientId) return;
     try {
-      if (!user || !user.patientId) {
-        console.warn("No patient ID found.");
-        return;
-      }
       const res = await axios.get(`https://localhost:7015/api/prescriptions/${user.patientId}`);
       setPrescriptions(res.data);
     } catch (err) {
@@ -36,262 +28,177 @@ export default function Prescription() {
     fetchPrescriptions();
   }, [user]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleDayToggle = (day) => {
-    setFormData((prev) => ({
-      ...prev,
-      days: prev.days.includes(day)
-        ? prev.days.filter((d) => d !== day)
-        : [...prev.days, day],
-    }));
-  };
-
-  const handleAddTime = () => {
-    setFormData((prev) => ({
-      ...prev,
-      times: [...prev.times, ""],
-    }));
-  };
-
-  const handleTimeChange = (index, value) => {
-    const updated = [...formData.times];
-    updated[index] = value;
-    setFormData((prev) => ({
-      ...prev,
-      times: updated,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!user || !user.patientId) {
-      console.error("No patient ID available.");
-      return;
-    }
-
-    const payload = {
-      medicineName: formData.medicineName,
-      instruction: formData.instruction,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
-      patientId: user.patientId,
-      days: formData.days.map((dayName) =>
-        ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].indexOf(dayName)
-      ),
-      times: formData.times,
-    };
-
-    try {
-      const res = await axios.post("https://localhost:7015/api/prescriptions", payload);
-      console.log("Prescription added:", res.data);
-      fetchPrescriptions();
-      setShowForm(false);
-    } catch (err) {
-      if (err.response?.data?.errors) {
-        console.error("Validation errors:", err.response.data.errors);
-      } else {
-        console.error("Submit error:", err);
-      }
-    }
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this prescription?")) return;
+    await axios.delete(`https://localhost:7015/api/prescriptions/${id}`);
+    fetchPrescriptions();
   };
 
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Your Prescriptions</h2>
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? "Close" : "Add Prescription"}
-        </button>
+      <div className="flex justify-between items-center mb-4 md:flex-row flex-col">
+        <div className="flex-center">
+          <h2 className="text-xl font-semibold">All Prescriptions</h2>
+        </div>
+        <div className="flex gap-2">
+          <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={() => navigate("/today-prescriptions")}>
+            See Today
+          </button>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => setShowAdd(true)}>
+            Add Prescription
+          </button>
+        </div>
       </div>
 
-      {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white p-4 rounded shadow-md mb-6 space-y-4"
-        >
-          <input
-            type="text"
-            name="medicineName"
-            placeholder="Medicine Name"
-            value={formData.medicineName}
-            onChange={handleInputChange}
-            className="w-full border p-2 rounded"
-            required
-          />
-          <textarea
-            name="instruction"
-            placeholder="Instruction"
-            value={formData.instruction}
-            onChange={handleInputChange}
-            className="w-full border p-2 rounded"
-            required
-          />
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label>Start Date</label>
-              <input
-                type="date"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleInputChange}
-                className="w-full border p-2 rounded"
-              />
-            </div>
-            <div className="flex-1">
-              <label>End Date</label>
-              <input
-                type="date"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleInputChange}
-                className="w-full border p-2 rounded"
-              />
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label className="font-semibold">Schedule Type:</label>
-            <div className="flex gap-4 mt-2">
-              <label>
-                <input
-                  type="radio"
-                  name="scheduleType"
-                  value="daily"
-                  checked={formData.scheduleType === "daily"}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      scheduleType: e.target.value,
-                      days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                    }))
-                  }
-                />
-                <span className="text-transparent">s</span> Daily
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="scheduleType"
-                  value="custom"
-                  checked={formData.scheduleType === "custom"}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      scheduleType: e.target.value,
-                      days: [],
-                    }))
-                  }
-                />
-                <span className="text-transparent">s</span>Choose Specific Day(s)
-              </label>
-            </div>
-          </div>
-
-          {formData.scheduleType === "custom" && (
-            <div>
-              <label className="font-semibold">Select Day(s):</label>
-              <div className="grid grid-cols-3 gap-2 mt-2">
-                {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
-                  <label key={day} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={formData.days.includes(day)}
-                      onChange={() => handleDayToggle(day)}
-                    />
-                    <span className="ml-1">{day}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div>
-            <label className="font-semibold">Time(s) to take medicine:</label>
-            {formData.times.map((time, index) => (
-              <input
-                key={index}
-                type="time"
-                value={time}
-                onChange={(e) => handleTimeChange(index, e.target.value)}
-                className="w-full border p-2 rounded mb-2"
-              />
-            ))}
-            <button
-              type="button"
-              className="text-blue-500 hover:underline"
-              onClick={handleAddTime}
-            >
-              + Add Time
-            </button>
-          </div>
-
-          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
-            Submit
-          </button>
-        </form>
-      )}
-
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full table-auto bg-white rounded shadow">
           <thead>
-            <tr className="bg-emerald-100 text-left">
+            <tr className="bg-emerald-100 text-center">
               <th className="px-4 py-2">Medicine</th>
-              <th className="px-4 py-2">Start</th>
-              <th className="px-4 py-2">End</th>
+              <th className="px-4 py-2">Instruction</th>
+              <th className="px-4 py-2">Duration</th>
+              <th className="px-4 py-2">Dosage</th>
               <th className="px-4 py-2">Times</th>
               <th className="px-4 py-2">Days</th>
-              <th className="px-4 py-2">Dose Status</th>
+              <th className="px-4 py-2">Status</th>
+              <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
           <tbody>
-            {prescriptions.map((p) => (
-              <tr key={p.prescriptionId} className="border-t align-top">
-                <td className="px-4 py-2">{p.medicineName}</td>
-                <td className="px-4 py-2">{new Date(p.startDate).toLocaleDateString()}</td>
-                <td className="px-4 py-2">{new Date(p.endDate).toLocaleDateString()}</td>
-                <td className="px-4 py-2">
-                  <ul className="list-disc pl-4">
-                    {p.prescriptionTimes?.map((t, i) => (
-                      <li key={i}>{t.timeOfDay}</li>
-                    )) || "-"}
-                  </ul>
-                </td>
-                <td className="px-4 py-2">
-                  <ul className="list-disc pl-4">
-                    {p.prescriptionDays?.map((d, i) => (
-                      <li key={i}>
-                        {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][d.dayOfWeek]}
-                      </li>
-                    )) || "-"}
-                  </ul>
-                </td>
-                <td className="px-4 py-2">
-                  <ul className="list-disc pl-4">
-                    {p.doseLogs?.length > 0
-                      ? p.doseLogs.map((log, i) => (
-                          <li key={i}>
-                            {log.takenTime ? `✅ Taken @ ${log.takenTime}` : `⏰ Missed (Scheduled ${log.scheduledDateTime})`}
-                          </li>
-                        ))
-                      : "-"}
-                  </ul>
+            {prescriptions.length === 0 ? (
+              <tr>
+                <td colSpan="8" className="text-center py-4 text-gray-500">
+                  Nothing to display yet.
                 </td>
               </tr>
-            ))}
+            ) : (
+              prescriptions.map((p) => (
+                <tr key={p.prescriptionId} className="border-t text-center">
+                  <td className="px-4 py-2">{p.medicineName}</td>
+                  <td className="px-4 py-2 w-50">{p.instruction}</td>
+                  <td className="px-4 py-2">
+                    {new Date(p.startDate).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })} - <br />
+                    {new Date(p.endDate).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td className="px-4 py-2">{p.dosage || "-"}</td>
+                  <td className="px-4 py-2">
+                    <ul className="list-disc pl-4">
+                      {p.prescriptionTimes?.map((t, i) => <li key={i}>{t.timeOfDay}</li>) || "-"}
+                    </ul>
+                  </td>
+                  <td className="px-4 py-2">
+                    <ul className="list-disc pl-4">
+                      {p.prescriptionDays?.map((d, i) => {
+                        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                        return <li key={i}>{days[d.dayOfWeek]}</li>;
+                      }) || "-"}
+                    </ul>
+                  </td>
+                  <td className="px-4 py-2">
+                    {new Date(p.endDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
+                      ? "Finished"
+                      : "Ongoing"}
+                  </td>
+                  <td className="px-4 py-2 flex gap-2 flex-wrap flex-center">
+                    <button
+                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+                      onClick={() => setEditing(p)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                      onClick={() => handleDelete(p.prescriptionId)}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition"
+                      onClick={() => setViewingHistoryId(p.prescriptionId)}
+                    >
+                      History
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
+      </div>
+
+      {showAdd && <FormModal onSaved={fetchPrescriptions} onClose={() => setShowAdd(false)} />}
+      {editing && <EditModal prescription={editing} onSaved={fetchPrescriptions} onClose={() => setEditing(null)} />}
+
+      {viewingHistoryId && (
+        <HistoryModal
+          prescriptionId={viewingHistoryId}
+          onClose={() => setViewingHistoryId(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+// 🔽 Modal Component (inside same file for simplicity)
+function HistoryModal({ prescriptionId, onClose }) {
+  const [logs, setLogs] = useState([]);
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const res = await axios.get(`https://localhost:7015/api/doselog/history/${prescriptionId}`);
+        setLogs(res.data);
+      } catch (err) {
+        console.error("History fetch error:", err);
+      }
+    };
+    fetchLogs();
+  }, [prescriptionId]);
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-lg max-h-[80vh] overflow-auto">
+        <h2 className="text-xl font-semibold mb-4">Dose History</h2>
+        <table className="w-full table-auto border">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="px-4 py-2 text-left">Date</th>
+              <th className="px-4 py-2 text-left">Time</th>
+              <th className="px-4 py-2 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {logs.length === 0 ? (
+              <tr>
+                <td colSpan="3" className="text-center text-gray-500 py-4">No history to show.</td>
+              </tr>
+            ) : (
+              logs.map((log) => (
+                <tr key={log.doseLogId}>
+                  <td className="px-4 py-2">{new Date(log.scheduledDateTime).toLocaleDateString()}</td>
+                  <td className="px-4 py-2">{new Date(log.scheduledDateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                  <td className="px-4 py-2">{log.status === 1 ? "Taken" : "Missed"}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={onClose}
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
   );
