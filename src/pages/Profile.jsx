@@ -3,10 +3,14 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Modal from '../components/Modal';
+import doctorImg from '../assets/Doctor.png';
+import patientImg from '../assets/Patient.png';
 
 const Profile = () => {
   const { user, loading } = useAuth();
   const [profile, setProfile] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [modalSuccess, setModalSuccess] = useState(false);
@@ -23,6 +27,7 @@ const Profile = () => {
               : `https://localhost:7015/api/patients/${user.patientId}`;
           const response = await axios.get(endpoint);
           setProfile(response.data);
+          setFormData(response.data); // Initialize formData with fetched data
         } catch (error) {
           console.error('Error fetching profile:', error);
         }
@@ -32,8 +37,41 @@ const Profile = () => {
     }
   }, [user]);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSave = async () => {
+    try {
+      const endpoint =
+        user.role === 'doctor'
+          ? `https://localhost:7015/api/doctor/${user.doctorId}`
+          : `https://localhost:7015/api/patients/${user.patientId}`;
+
+      console.log('Saving profile data:', formData);
+      await axios.put(endpoint, formData);
+
+      setModalMessage('Profile updated successfully.');
+      setModalSuccess(true);
+      setShowModal(true);
+      setProfile(formData);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      setModalMessage('Failed to update profile.');
+      setModalSuccess(false);
+      setShowModal(true);
+    }
+  };
+
+  const handleCancel = () => {
+    setFormData(profile); // Revert form changes
+    setIsEditing(false);
+  };
+
   const handleEdit = () => {
-    navigate('/edit-profile');
+    setIsEditing(true);
   };
 
   const confirmDelete = () => {
@@ -79,49 +117,126 @@ const Profile = () => {
   if (!profile) return <div className="text-center mt-10">Loading profile data...</div>;
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg space-y-4">
-      <h2 className="text-2xl font-bold text-gray-800 text-center">
-        {user.role === 'doctor' ? 'Doctor Profile' : 'Patient Profile'}
-      </h2>
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg space-y-4">
+      <div className="flex flex-col items-center mb-6">
+        {/* Profile Image */}
+        <img
+          src={user.role === 'doctor' ? doctorImg : patientImg}
+          alt="Profile"
+          className="w-135 h-auto"
+        />
+      </div>
 
-      <div className="flex flex-col items-center">
-        {/* Avatar Placeholder */}
-        <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-          <span className="text-gray-500 text-xl">👤</span>
+      {/* Profile Details */}
+      <form className="space-y-4">
+        {/* Full Name */}
+        <div>
+          <label className="block font-medium mb-1">Full Name:</label>
+          <input
+            type="text"
+            name="fullName"
+            value={formData.fullName || ''}
+            onChange={handleChange}
+            disabled={!isEditing}
+            className={`w-full px-3 py-2 border rounded ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+          />
         </div>
 
-        {/* Profile Details */}
-        <div className="space-y-2 w-full">
-          <p><span className="font-semibold">Name:</span> {profile.fullName}</p>
-          <p><span className="font-semibold">Email:</span> {profile.email}</p>
-
-          {user.role === 'doctor' && (
-            <p><span className="font-semibold">Specialty:</span> {profile.specialty}</p>
-          )}
-
-          {user.role === 'patient' && (
-            <p>
-              <span className="font-semibold">Date of Birth:</span> {new Date(profile.dateOfBirth).toLocaleDateString()}
-            </p>
-          )}
+        {/* Email */}
+        <div>
+          <label className="block font-medium mb-1">Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email || ''}
+            onChange={handleChange}
+            disabled={!isEditing}
+            className={`w-full px-3 py-2 border rounded ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+          />
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col space-y-2 mt-4 w-full">
-          <button
-            onClick={handleEdit}
-            className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-          >
-            Edit Profile
-          </button>
+        {/* Doctor-specific */}
+        {user.role === 'doctor' && (
+          <div>
+            <label className="block font-medium mb-1">Specialty:</label>
+            <input
+              type="text"
+              name="specialty"
+              value={formData.specialty || ''}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className={`w-full px-3 py-2 border rounded ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+            />
+          </div>
+        )}
 
-          <button
-            onClick={confirmDelete}
-            className="w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-          >
-            Delete Profile
-          </button>
-        </div>
+        {/* Patient-specific */}
+        {user.role === 'patient' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-medium mb-1">Date of Birth:</label>
+              <input
+                type="date"
+                name="dateOfBirth"
+                value={formData.dateOfBirth ? formData.dateOfBirth.substring(0, 10) : ''}
+                onChange={handleChange}
+                disabled={!isEditing}
+                className={`w-full px-3 py-2 border rounded ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+              />
+            </div>
+
+            {/* Assigned Doctor */}
+            {profile.doctor && (
+              <div>
+                <label className="block font-medium mb-1">Assigned Doctor:</label>
+                <input
+                  type="text"
+                  value={profile.doctor.fullName}
+                  disabled
+                  className="w-full px-3 py-2 border rounded bg-gray-100 cursor-not-allowed"
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </form>
+
+      {/* Buttons */}
+      <div className="flex flex-col items-center space-y-2 mt-4 w-full">
+        {!isEditing ? (
+          <>
+            <button
+              onClick={handleEdit}
+              className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+            >
+              Edit Profile
+            </button>
+
+            <button
+              onClick={confirmDelete}
+              className="w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Delete Profile
+            </button>
+          </>
+        ) : (
+          <div className="flex space-x-2 w-full">
+            <button
+              type="button"
+              onClick={handleSave}
+              className="flex-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="flex-1 px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Modal for confirm + success/error */}

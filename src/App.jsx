@@ -15,7 +15,6 @@ import TodayPrescription from "./pages/TodayPrescription";
 import Patient from "./pages/Patient";
 import HowToUse from "./pages/HowToUse";
 import DashboardLayout from "./layouts/DashboardLayout";
-import EditProfile from './pages/EditProfile';
 
 export default function App() {
   return (
