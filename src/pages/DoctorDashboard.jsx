@@ -20,16 +20,10 @@ export default function DoctorDashboard() {
       </div><br /><br />
       <div className="flex flex-wrap gap-4 mb-4 text-center flex-center">
         <button
-          onClick={() => navigate("/today-prescriptions")}
-          className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-md transition"
-        >
-          Today's Prescriptions
-        </button>
-        <button
-          onClick={() => navigate("/prescriptions")}
+          onClick={() => navigate("/patients")}
           className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md transition"
         >
-          All Prescriptions
+          List of Patients
         </button>
         <button
           onClick={() => navigate("/how-to-use")}
