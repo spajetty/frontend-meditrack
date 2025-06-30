@@ -3,6 +3,7 @@ import banner from '../assets/bg-meditrack.png';
 import { useAuth } from "../context/AuthContext";
 
 export default function PatientDashboard() {
+  const navigate = useNavigate();
   const { user } = useAuth();
 
   return (
@@ -10,10 +11,10 @@ export default function PatientDashboard() {
       <div>
         <h1 className="text-4xl font-bold">Welcome to <span className="text-emerald-500">Medi</span>
             <span className="text-cyan-500">Track</span>, {user.fullName}!</h1>
-      </div>
+      </div><br />
       <div>
         <img src={banner} alt="" className="lg:w-xl md:w-lg sm:w-lg w-sm"/>
-      </div><br />
+      </div><br /><br />
       <div className="flex flex-wrap gap-4 mb-4">
         <button
           onClick={() => navigate("/today-prescriptions")}
@@ -28,7 +29,7 @@ export default function PatientDashboard() {
           All Prescriptions
         </button>
         <button
-          onClick={() => navigate("/history")}
+          onClick={() => navigate("/how-to-use")}
           className="bg-purple-500 hover:bg-purple-600 text-white px-5 py-2 rounded-md transition"
         >
           How to Use
