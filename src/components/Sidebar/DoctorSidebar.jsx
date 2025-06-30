@@ -3,7 +3,7 @@ import logo from "../../assets/meditrack-logo.png";
 import { useAuth } from "../../context/AuthContext";
 
 const menuItems = [
-  { to: "/doctor-dashboard", label: "Dashboard" },
+  { to: "/doctor-dashboard", label: "Home" },
   { to: "/patients", label: "Patients" },
   { to: "/profile", label: "Profile" },
   { to: "/how-to-use", label: "How to Use" },

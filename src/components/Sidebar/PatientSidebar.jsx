@@ -3,7 +3,7 @@ import logo from "../../assets/meditrack-logo.png";
 import { useAuth } from "../../context/AuthContext";
 
 const menuItems = [
-  { to: "/patient-dashboard", label: "Dashboard" },
+  { to: "/patient-dashboard", label: "Home" },
   { to: "/today-prescriptions", label: "Prescriptions" },
   { to: "/profile", label: "Profile" },
   { to: "/how-to-use", label: "How to Use" },
