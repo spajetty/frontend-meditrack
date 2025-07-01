@@ -23,7 +23,7 @@ const Patient = () => {
   }, [user]);
 
   const handleViewHistory = (patientId) => {
-    navigate(`/medication-history/${patientId}`);
+     navigate(`/doctor-medication-summary/${patientId}`);
   };
 
   return (
