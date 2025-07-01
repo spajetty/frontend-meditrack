@@ -13,7 +13,7 @@ export default function TodayPrescription() {
 
   const markAsTaken = async (id) => {
     try {
-      await axios.post(`https://localhost:7015/api/doselogs/mark-taken/${id}`);
+      await axios.post(`https://localhost:7015/api/doselog/mark-taken/${id}`);
       fetchToday(); // Refresh the list to update the status
     } catch (err) {
       console.error("Mark error:", err);
