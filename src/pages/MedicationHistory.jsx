@@ -12,7 +12,7 @@ const MedicationHistory = () => {
 
   useEffect(() => {
     axios
-      .get(`https://localhost:7015/api/doselogs/patient/${patientId}`)
+      .get(`https://localhost:7015/api/doselog/patient/${patientId}`)
       .then((response) => {
         const formattedData = response.data.map((entry) => ({
           id: entry.id,
