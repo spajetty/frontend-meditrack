@@ -15,6 +15,7 @@ const Profile = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalSuccess, setModalSuccess] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [doctors, setDoctors] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,46 +28,66 @@ const Profile = () => {
               : `https://localhost:7015/api/patients/${user.patientId}`;
           const response = await axios.get(endpoint);
           setProfile(response.data);
-          setFormData(response.data); // Initialize formData with fetched data
+          setFormData(response.data);
         } catch (error) {
           console.error('Error fetching profile:', error);
         }
       };
 
       fetchProfile();
+
+      if (user.role === 'patient') {
+        const fetchDoctors = async () => {
+          try {
+            const doctorResponse = await axios.get('https://localhost:7015/api/doctor');
+            setDoctors(doctorResponse.data);
+          } catch (error) {
+            console.error('Error fetching doctors:', error);
+          }
+        };
+        fetchDoctors();
+      }
     }
   }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({
+      ...formData,
+      [name]: name === 'doctorId' ? parseInt(value) : value,
+    });
   };
 
   const handleSave = async () => {
-    try {
-      const endpoint =
-        user.role === 'doctor'
-          ? `https://localhost:7015/api/doctor/${user.doctorId}`
-          : `https://localhost:7015/api/patients/${user.patientId}`;
+  try {
+    const endpoint =
+      user.role === 'doctor'
+        ? `https://localhost:7015/api/doctor/${user.doctorId}`
+        : `https://localhost:7015/api/patients/${user.patientId}`;
 
-      console.log('Saving profile data:', formData);
-      await axios.put(endpoint, formData);
+    console.log('Saving profile data:', formData);
+    await axios.put(endpoint, formData);
 
-      setModalMessage('Profile updated successfully.');
-      setModalSuccess(true);
-      setShowModal(true);
-      setProfile(formData);
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      setModalMessage('Failed to update profile.');
-      setModalSuccess(false);
-      setShowModal(true);
-    }
-  };
+    // ✅ After saving, refetch latest profile data
+    const updatedProfileResponse = await axios.get(endpoint);
+    setProfile(updatedProfileResponse.data);
+    setFormData(updatedProfileResponse.data);
+
+    setModalMessage('Profile updated successfully.');
+    setModalSuccess(true);
+    setShowModal(true);
+    setIsEditing(false);
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    setModalMessage('Failed to update profile.');
+    setModalSuccess(false);
+    setShowModal(true);
+  }
+};
+
 
   const handleCancel = () => {
-    setFormData(profile); // Revert form changes
+    setFormData(profile);
     setIsEditing(false);
   };
 
@@ -119,7 +140,6 @@ const Profile = () => {
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg space-y-4">
       <div className="flex flex-col items-center mb-6">
-        {/* Profile Image */}
         <img
           src={user.role === 'doctor' ? doctorImg : patientImg}
           alt="Profile"
@@ -127,9 +147,7 @@ const Profile = () => {
         />
       </div>
 
-      {/* Profile Details */}
       <form className="space-y-4">
-        {/* Full Name */}
         <div>
           <label className="block font-medium mb-1">Full Name:</label>
           <input
@@ -142,7 +160,6 @@ const Profile = () => {
           />
         </div>
 
-        {/* Email */}
         <div>
           <label className="block font-medium mb-1">Email:</label>
           <input
@@ -155,7 +172,6 @@ const Profile = () => {
           />
         </div>
 
-        {/* Doctor-specific */}
         {user.role === 'doctor' && (
           <div>
             <label className="block font-medium mb-1">Specialty:</label>
@@ -170,7 +186,6 @@ const Profile = () => {
           </div>
         )}
 
-        {/* Patient-specific */}
         {user.role === 'patient' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -185,23 +200,35 @@ const Profile = () => {
               />
             </div>
 
-            {/* Assigned Doctor */}
-            {profile.doctor && (
-              <div>
-                <label className="block font-medium mb-1">Assigned Doctor:</label>
+            <div>
+              <label className="block font-medium mb-1">Assigned Doctor:</label>
+              {isEditing ? (
+                <select
+                  name="doctorId"
+                  value={formData.doctorId || ''}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded"
+                >
+                  <option value="">Select a doctor</option>
+                  {doctors.map((doctor) => (
+                    <option key={doctor.doctorId} value={doctor.doctorId}>
+                      {doctor.fullName} - {doctor.specialty}
+                    </option>
+                  ))}
+                </select>
+              ) : (
                 <input
                   type="text"
-                  value={profile.doctor.fullName}
+                  value={profile.doctor ? profile.doctor.fullName : 'No doctor assigned'}
                   disabled
                   className="w-full px-3 py-2 border rounded bg-gray-100 cursor-not-allowed"
                 />
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
       </form>
 
-      {/* Buttons */}
       <div className="flex flex-col items-center space-y-2 mt-4 w-full">
         {!isEditing ? (
           <>
@@ -239,7 +266,6 @@ const Profile = () => {
         )}
       </div>
 
-      {/* Modal for confirm + success/error */}
       <Modal
         show={showModal}
         onClose={handleModalClose}
