@@ -16,6 +16,7 @@ import Patient from "./pages/Patient";
 import HowToUse from "./pages/HowToUse";
 import DashboardLayout from "./layouts/DashboardLayout";
 import MedicationHistory from './pages/MedicationHistory';
+import DoctorMedicationSummary from './pages/DoctorMedicationSummary';
 
 export default function App() {
   return (
@@ -94,8 +95,21 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        </Routes>
+
+        <Route
+          path="/doctor-medication-summary/:patientId"
+          element={
+            <ProtectedRoute role="doctor">
+              <DashboardLayout><DoctorMedicationSummary /></DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
         
+ 
+        </Routes>
+          
+        
+          
       </BrowserRouter>
     </AuthProvider>
   );

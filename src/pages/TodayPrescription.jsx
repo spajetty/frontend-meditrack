@@ -13,7 +13,7 @@ export default function TodayPrescription() {
 
   const markAsTaken = async (id) => {
     try {
-      await axios.post(`https://localhost:7015/api/doselog/mark-taken/${id}`);
+      await axios.post(`https://localhost:7015/api/doselogs/mark-taken/${id}`);
       fetchToday(); // Refresh the list to update the status
     } catch (err) {
       console.error("Mark error:", err);
@@ -40,7 +40,7 @@ export default function TodayPrescription() {
 
   const undoDose = async (id) => {
     try {
-      await axios.post(`https://localhost:7015/api/doselog/undo/${id}`);
+      await axios.post(`https://localhost:7015/api/doselogs/undo/${id}`);  // ✅ Fixed the typo here
       fetchToday();
     } catch (err) {
       console.error("Undo error:", err);
@@ -89,9 +89,9 @@ export default function TodayPrescription() {
                   Nothing to display yet.
                 </td>
               </tr>
-              ) : (
-                todayPrescriptions.map((log) => (
-                  <tr key={log.doseLogId} className="border-t text-center">
+            ) : (
+              todayPrescriptions.map((log) => (
+                <tr key={log.doseLogId} className="border-t text-center">
                   <td className="px-4 py-2">{log.prescription.medicineName}</td>
                   <td className="px-4 py-2 w-50">{log.prescription.instruction}</td>
                   <td className="px-4 py-2">
@@ -99,7 +99,7 @@ export default function TodayPrescription() {
                       month: "long",
                       day: "numeric",
                       year: "numeric",
-                    })} -{" "} <br />
+                    })} - <br />
                     {new Date(log.prescription.endDate).toLocaleDateString("en-US", {
                       month: "long",
                       day: "numeric",
@@ -140,8 +140,8 @@ export default function TodayPrescription() {
                     )}
                   </td>
                 </tr>
-                ))
-              )}
+              ))
+            )}
           </tbody>
         </table>
       </div>
