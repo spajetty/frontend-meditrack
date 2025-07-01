@@ -32,7 +32,7 @@ const DoctorPatientMedicationSummary = () => {
       try {
         const [presRes, doseRes] = await Promise.all([
           axios.get(`https://localhost:7015/api/prescriptions/${patientId}`),
-          axios.get(`https://localhost:7015/api/doselogs/patient/${patientId}`),
+          axios.get(`https://localhost:7015/api/doselog/patient/${patientId}`),
         ]);
 
         const doseLogs = doseRes.data;
@@ -50,9 +50,9 @@ const DoctorPatientMedicationSummary = () => {
   // ✅ Total scheduled doses
   const scheduled = totalDays * dosesPerDay;
 
-  const taken = relatedLogs.filter((log) => log.status.toLowerCase() === "taken").length;
-  const missed = relatedLogs.filter((log) => log.status.toLowerCase() === "missed").length;
-  const pending = relatedLogs.filter((log) => log.status.toLowerCase() === "pending").length;
+  const taken = relatedLogs.filter((log) => String(log.status).toLowerCase() === "taken").length;
+  const missed = relatedLogs.filter((log) => String(log.status).toLowerCase() === "missed").length;
+  const pending = relatedLogs.filter((log) => String(log.status).toLowerCase() === "pending").length;
 
   const adherenceRate = scheduled > 0 ? Math.round((taken / scheduled) * 100) : 0;
 
@@ -225,14 +225,14 @@ const DoctorPatientMedicationSummary = () => {
                             <td className="px-2 py-1">
                               <span
                                 className={`px-2 py-1 text-xs rounded-full ${
-                                  dose.status.toLowerCase() === "taken"
+                                  String(dose.status).toLowerCase() === "taken"
                                     ? "bg-green-100 text-green-800"
-                                    : dose.status.toLowerCase() === "missed"
+                                    : String(dose.status).toLowerCase() === "missed"
                                     ? "bg-red-100 text-red-800"
                                     : "bg-yellow-100 text-yellow-800"
                                 }`}
                               >
-                                {dose.status}
+                                {String(dose.status) || "Unknown"}
                               </span>
                             </td>
                             <td className="px-2 py-1">{dose.difference}</td>
