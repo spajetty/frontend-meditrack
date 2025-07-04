@@ -9,6 +9,7 @@ export default function Prescription() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const [searchTerm, setSearchTerm] = useState('');
   const [prescriptions, setPrescriptions] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -28,6 +29,11 @@ export default function Prescription() {
     fetchPrescriptions();
   }, [user]);
 
+  const filteredPrescriptions = prescriptions.filter(p =>
+    p.medicineName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+
   const handleDelete = async (id) => {
     if (!confirm("Delete this prescription?")) return;
     await axios.delete(`https://localhost:7015/api/prescriptions/${id}`);
@@ -35,116 +41,157 @@ export default function Prescription() {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4 md:flex-row flex-col">
-        <div className="flex-center">
-          <h2 className="text-xl font-semibold">All Prescriptions</h2>
-        </div>
-        <div className="flex gap-2">
-          <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={() => navigate("/today-prescriptions")}>
-            See Today
-          </button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => setShowAdd(true)}>
-            Add Prescription
-          </button>
-        </div>
+  <div className="p-4">
+    <div className="flex justify-between items-center mb-4 md:flex-row flex-col">
+      <div className="flex-center">
+        <h2 className="text-xl font-semibold">All Prescriptions</h2>
       </div>
+      <div className="flex gap-2">
+        <button
+          className="bg-gray-500 text-white px-4 py-2 rounded"
+          onClick={() => navigate("/today-prescriptions")}
+        >
+          See Today
+        </button>
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={() => setShowAdd(true)}
+        >
+          Add Prescription
+        </button>
+      </div>
+    </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full table-auto bg-white rounded shadow">
-          <thead>
-            <tr className="bg-emerald-100 text-center">
-              <th className="px-4 py-2">Medicine</th>
-              <th className="px-4 py-2">Instruction</th>
-              <th className="px-4 py-2">Duration</th>
-              <th className="px-4 py-2">Dosage</th>
-              <th className="px-4 py-2">Times</th>
-              <th className="px-4 py-2">Days</th>
-              <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2">Action</th>
+    {/* Search Box aligned right */}
+    <div className="mb-4 flex justify-end">
+      <div className="relative w-full max-w-xs">
+        <input
+          type="text"
+          placeholder="Search by medicine name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="bg-white border border-gray-300 rounded px-3 py-2 w-full text-sm pr-10"
+        />
+        <i className="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+      </div>
+    </div>
+
+    <div className="overflow-x-auto">
+      <table className="w-full table-auto bg-white rounded shadow">
+        <thead>
+          <tr className="bg-emerald-100 text-center">
+            <th className="px-4 py-2">Medicine</th>
+            <th className="px-4 py-2">Instruction</th>
+            <th className="px-4 py-2">Duration</th>
+            <th className="px-4 py-2">Dosage</th>
+            <th className="px-4 py-2">Times</th>
+            <th className="px-4 py-2">Days</th>
+            <th className="px-4 py-2">Status</th>
+            <th className="px-4 py-2">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredPrescriptions.length === 0 ? (
+            <tr>
+              <td colSpan="8" className="text-center py-4 text-gray-500">
+                No matching prescriptions found.
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {prescriptions.length === 0 ? (
-              <tr>
-                <td colSpan="8" className="text-center py-4 text-gray-500">
-                  Nothing to display yet.
+          ) : (
+            filteredPrescriptions.map((p) => (
+              <tr key={p.prescriptionId} className="border-t text-center">
+                <td className="px-4 py-2">{p.medicineName}</td>
+                <td className="px-4 py-2 w-50">{p.instruction}</td>
+                <td className="px-4 py-2">
+                  {new Date(p.startDate).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}{" "}
+                  - <br />
+                  {new Date(p.endDate).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </td>
+                <td className="px-4 py-2">{p.dosage || "-"}</td>
+                <td className="px-4 py-2">
+                  <ul className="list-disc pl-4">
+                    {p.prescriptionTimes?.map((t, i) => (
+                      <li key={i}>{t.timeOfDay}</li>
+                    )) || "-"}
+                  </ul>
+                </td>
+                <td className="px-4 py-2">
+                  <ul className="list-disc pl-4">
+                    {p.prescriptionDays?.map((d, i) => {
+                      const days = [
+                        "Sunday",
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday",
+                      ];
+                      return <li key={i}>{days[d.dayOfWeek]}</li>;
+                    }) || "-"}
+                  </ul>
+                </td>
+                <td className="px-4 py-2">
+                  {new Date(p.endDate).setHours(0, 0, 0, 0) <
+                  new Date().setHours(0, 0, 0, 0)
+                    ? "Finished"
+                    : "Ongoing"}
+                </td>
+                <td className="px-4 py-2 flex gap-2 flex-wrap justify-center">
+                  <button
+                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+                    onClick={() => setEditing(p)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                    onClick={() => handleDelete(p.prescriptionId)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition"
+                    onClick={() => setViewingHistoryId(p.prescriptionId)}
+                  >
+                    History
+                  </button>
                 </td>
               </tr>
-            ) : (
-              prescriptions.map((p) => (
-                <tr key={p.prescriptionId} className="border-t text-center">
-                  <td className="px-4 py-2">{p.medicineName}</td>
-                  <td className="px-4 py-2 w-50">{p.instruction}</td>
-                  <td className="px-4 py-2">
-                    {new Date(p.startDate).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })} - <br />
-                    {new Date(p.endDate).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </td>
-                  <td className="px-4 py-2">{p.dosage || "-"}</td>
-                  <td className="px-4 py-2">
-                    <ul className="list-disc pl-4">
-                      {p.prescriptionTimes?.map((t, i) => <li key={i}>{t.timeOfDay}</li>) || "-"}
-                    </ul>
-                  </td>
-                  <td className="px-4 py-2">
-                    <ul className="list-disc pl-4">
-                      {p.prescriptionDays?.map((d, i) => {
-                        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                        return <li key={i}>{days[d.dayOfWeek]}</li>;
-                      }) || "-"}
-                    </ul>
-                  </td>
-                  <td className="px-4 py-2">
-                    {new Date(p.endDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
-                      ? "Finished"
-                      : "Ongoing"}
-                  </td>
-                  <td className="px-4 py-2 flex gap-2 flex-wrap flex-center">
-                    <button
-                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
-                      onClick={() => setEditing(p)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                      onClick={() => handleDelete(p.prescriptionId)}
-                    >
-                      Delete
-                    </button>
-                    <button
-                      className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition"
-                      onClick={() => setViewingHistoryId(p.prescriptionId)}
-                    >
-                      History
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {showAdd && <FormModal onSaved={fetchPrescriptions} onClose={() => setShowAdd(false)} />}
-      {editing && <EditModal prescription={editing} onSaved={fetchPrescriptions} onClose={() => setEditing(null)} />}
-
-      {viewingHistoryId && (
-        <HistoryModal
-          prescriptionId={viewingHistoryId}
-          onClose={() => setViewingHistoryId(null)}
-        />
-      )}
+            ))
+          )}
+        </tbody>
+      </table>
     </div>
-  );
+
+    {showAdd && (
+      <FormModal onSaved={fetchPrescriptions} onClose={() => setShowAdd(false)} />
+    )}
+    {editing && (
+      <EditModal
+        prescription={editing}
+        onSaved={fetchPrescriptions}
+        onClose={() => setEditing(null)}
+      />
+    )}
+
+    {viewingHistoryId && (
+      <HistoryModal
+        prescriptionId={viewingHistoryId}
+        onClose={() => setViewingHistoryId(null)}
+      />
+    )}
+  </div>
+);
+
 }
 
 // 🔽 Modal Component (inside same file for simplicity)

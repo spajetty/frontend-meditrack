@@ -10,6 +10,11 @@ const DoctorPatientMedicationSummary = () => {
   const [patientInfo, setPatientInfo] = useState(null);
   const [expandedCard, setExpandedCard] = useState(null);
   const [selectedTimeFilter, setSelectedTimeFilter] = useState("30 Days");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredPrescriptions = prescriptions.filter((prescription) =>
+    prescription.medicineName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const timeFilterOptions = ["7 Days", "30 Days", "90 Days", "All Time"];
 
@@ -146,7 +151,7 @@ const DoctorPatientMedicationSummary = () => {
           series: [
             {
               type: "pie",
-              radius: ["50%", "70%"],
+              radius: ["40%", "70%"],
               avoidLabelOverlap: false,
               label: {
                 show: true,
@@ -219,55 +224,74 @@ const DoctorPatientMedicationSummary = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6">
-        {prescriptions.map((prescription) => (
-          <div
-            key={prescription.id}
-            className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 mb-6 ${expandedCard === prescription.id ? "pb-6" : ""}`}
-          >
+        {/* Search Box aligned right */}
+        <div className="mb-4 flex justify-end">
+          <div className="relative w-full max-w-xs">
+            <input
+              type="text"
+              placeholder="Search by medicine name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-2 w-full text-sm pr-10"
+            />
+            <i className="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+          </div>
+        </div>
+
+        {filteredPrescriptions.length === 0 ? (
+          <div className="text-center text-gray-500 mt-10">
+            No prescriptions match your search.
+          </div>
+        ) : (
+          filteredPrescriptions.map((prescription) => (
             <div
-              onClick={() => toggleCard(prescription.id)}
-              className="px-6 py-4 flex justify-between items-center cursor-pointer hover:bg-gray-100"
+              key={prescription.id}
+              className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 mb-6 ${
+                expandedCard === prescription.id ? "pb-6" : ""
+              }`}
             >
-              <div className="flex-1">
-                <div className="flex items-center">
-                  <h3 className="text-lg font-bold">{prescription.medicineName}</h3>
-                  <span
-                    className={`ml-3 px-2 py-1 text-xs rounded-full ${
-                      prescription.status === "Completed"
-                        ? "bg-green-100 text-green-800"
-                        : prescription.status === "Ongoing"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {prescription.status}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-600">{prescription.dosage}</p>
-
-              </div>
-              <div className="text-right">
-                <p className="text-xs text-gray-500">
-                  {formatDate(prescription.startDate)} - {formatDate(prescription.endDate)}
-                </p>
-                <div className="mt-1 flex items-center justify-end">
-                  <span className="text-sm font-medium mr-2">Adherence:</span>
-                  <div className="w-24 bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className={`h-2.5 rounded-full ${getAdherenceColorClass(prescription.adherence.rate)}`}
-                      style={{ width: `${prescription.adherence.rate}%` }}
-                    ></div>
+              <div
+                onClick={() => toggleCard(prescription.id)}
+                className="px-6 py-4 flex justify-between items-center cursor-pointer hover:bg-gray-100"
+              >
+                <div className="flex-1">
+                  <div className="flex items-center">
+                    <h3 className="text-lg font-bold">{prescription.medicineName}</h3>
+                    <span
+                      className={`ml-3 px-2 py-1 text-xs rounded-full ${
+                        prescription.status === "Completed"
+                          ? "bg-green-100 text-green-800"
+                          : prescription.status === "Ongoing"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {prescription.status}
+                    </span>
                   </div>
-                  <span className="ml-2 text-sm font-medium">{prescription.adherence.rate}%</span>
+                  <p className="text-sm text-gray-600">{prescription.dosage}</p>
                 </div>
-
-              </div>
-              <div className="ml-4">
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">
+                    {formatDate(prescription.startDate)} - {formatDate(prescription.endDate)}
+                  </p>
+                  <div className="mt-1 flex items-center justify-end">
+                    <span className="text-sm font-medium mr-2">Adherence:</span>
+                    <div className="w-24 bg-gray-200 rounded-full h-2.5">
+                      <div
+                        className={`h-2.5 rounded-full ${getAdherenceColorClass(prescription.adherence.rate)}`}
+                        style={{ width: `${prescription.adherence.rate}%` }}
+                      ></div>
+                    </div>
+                    <span className="ml-2 text-sm font-medium">{prescription.adherence.rate}%</span>
+                  </div>
+                </div>
+                <div className="ml-4">
                   <i
                     className={`fas fa-chevron-${expandedCard === prescription.id ? "up" : "down"} text-gray-400`}
                   ></i>
+                </div>
               </div>
-            </div>
 
               {expandedCard === prescription.id && (
                 <div className="px-6 pt-2">
@@ -324,6 +348,8 @@ const DoctorPatientMedicationSummary = () => {
                                     className={`px-2 py-1 text-xs rounded-full ${
                                       dose.status === "Taken"
                                         ? "bg-green-100 text-green-800"
+                                        : dose.status === "Pending"
+                                        ? "bg-gray-100 text-gray-800"
                                         : "bg-red-100 text-red-800"
                                     }`}
                                   >
@@ -346,8 +372,9 @@ const DoctorPatientMedicationSummary = () => {
                   </div>
                 </div>
               )}
-          </div>
-        ))}
+            </div>
+          ))
+        )}
       </main>
     </div>
   );
