@@ -53,6 +53,14 @@ export default function App() {
             }
           />
           <Route
+          path="/medication-history/:prescriptionId"
+          element={
+            <ProtectedRoute role="patient">
+              <DashboardLayout><MedicationHistory /></DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+          <Route
             path="/profile"
             element={
               <ProtectedRoute>
@@ -87,14 +95,7 @@ export default function App() {
             }
           />
 
-          <Route
-          path="/medication-history/:patientId"
-          element={
-            <ProtectedRoute role="doctor">
-              <DashboardLayout><MedicationHistory /></DashboardLayout>
-            </ProtectedRoute>
-          }
-        />
+
 
         <Route
           path="/doctor-medication-summary/:patientId"

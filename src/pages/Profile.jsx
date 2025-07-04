@@ -212,7 +212,7 @@ const Profile = () => {
                   <option value="">Select a doctor</option>
                   {doctors.map((doctor) => (
                     <option key={doctor.doctorId} value={doctor.doctorId}>
-                      {doctor.fullName} - {doctor.specialty}
+                      {doctor.fullName}
                     </option>
                   ))}
                 </select>

@@ -24,6 +24,22 @@ export default function FormModal({ onClose, onSaved }) {
     }));
   };
 
+  const handleFrequencyChange = (type) => {
+    if (type === "daily") {
+      setFormData((prev) => ({
+        ...prev,
+        scheduleType: type,
+        days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],  // All days
+      }));
+    } else if (type === "custom") {
+      setFormData((prev) => ({
+        ...prev,
+        scheduleType: type,
+        days: [], // Start with empty days for custom
+      }));
+    }
+  };
+
   const handleDayToggle = (day) => {
     setFormData((prev) => ({
       ...prev,
@@ -71,6 +87,7 @@ export default function FormModal({ onClose, onSaved }) {
       startDate: formData.startDate,
       endDate: formData.endDate,
       patientId: user.patientId,
+      // frequencyType: formData.scheduleType,
       days: formData.days.map((dayName) =>
         ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].indexOf(dayName)
       ),
@@ -92,93 +109,121 @@ export default function FormModal({ onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 px-2 py-4 sm:px-4">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-lg lg:w-[50%] md:w-[60%] sm:w-[90%] max-w-[95%] max-h-[90vh] overflow-y-auto space-y-4 sm:max-w-[95%]"
       >
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">Add Prescription</h2>
+        
+        <div className="flex justify-between items-center border-b border-gray-200 py-3 mb-2">
+          <h2 className="text-xl font-bold text-gray-800">
+            Add Prescription
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 cursor-pointer"
+          >
+            <i className="fas fa-times text-xl"></i>
+          </button>
+        </div>
 
-        <input
-          type="text"
-          name="medicineName"
-          placeholder="Medicine Name"
-          value={formData.medicineName}
-          onChange={handleInputChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <textarea
-          name="instruction"
-          placeholder="Instruction"
-          value={formData.instruction}
-          onChange={handleInputChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="text"
-          name="dosage"
-          placeholder="Dosage (e.g. 130 mg, 75g)"
-          value={formData.dosage}
-          onChange={handleInputChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="w-full sm:flex-1">
-            <label>Start Date</label>
+         <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              Medicine Name <span className="text-red-500">*</span>
+            </label>
             <input
-              type="date"
-              name="startDate"
-              value={formData.startDate}
+              type="text"
+              name="medicineName"
+              value={formData.medicineName}
               onChange={handleInputChange}
-              className="w-full border p-2 rounded"
+              placeholder="e.g. Paracetamol, Amoxicillin"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
-          <div className="w-full sm:flex-1">
-            <label>End Date</label>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              Dosage <span className="text-red-500">*</span>
+            </label>
             <input
-              type="date"
-              name="endDate"
-              value={formData.endDate}
+              type="text"
+              name="dosage"
+              value={formData.dosage}
               onChange={handleInputChange}
-              className="w-full border p-2 rounded"
+              placeholder="e.g. '500mg', '5 ml'"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              Instructions <span className="text-gray-500 text-sm font-normal">(Optional)</span>
+            </label>
+            <textarea
+              name="instruction"
+              value={formData.instruction}
+              onChange={handleInputChange}
+              placeholder="e.g. 'After meals', 'Before bedtime', 'Take with water'"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+            />
+          </div>  
+
+          {/*Schedule Section*/}  
+          <div className="mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">
+                  Start Date <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">
+                  End Date <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleInputChange}
+                  min={formData.startDate}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+            </div>
         </div>
         <div>
-          <label className="font-semibold">Schedule Type:</label>
+          <label className="block text-gray-700 font-medium mb-2">
+              Schedule Type <span className="text-red-500">*</span>
+            </label>
           <div className="flex gap-4 mt-2">
-            <label>
+            <label className="flex items-center cursor-pointer">
               <input
                 type="radio"
                 name="scheduleType"
                 value="daily"
                 checked={formData.scheduleType === "daily"}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    scheduleType: e.target.value,
-                    days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                  }))
-                }
+                onChange={() => handleFrequencyChange('daily')}
               />
               <span className="ml-1">Daily</span>
             </label>
-            <label>
+            <label className="flex items-center cursor-pointer">
               <input
                 type="radio"
                 name="scheduleType"
                 value="custom"
                 checked={formData.scheduleType === "custom"}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    scheduleType: e.target.value,
-                    days: [],
-                  }))
-                }
+                onChange={() => handleFrequencyChange('custom')}
               />
               <span className="ml-1">Custom Days</span>
             </label>
@@ -186,27 +231,72 @@ export default function FormModal({ onClose, onSaved }) {
         </div>
 
         {formData.scheduleType === "custom" && (
-          <div>
-            <label className="font-semibold">Select Day(s):</label>
-            <div className="grid grid-cols-3 gap-2 mt-2">
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">Select Days</label>
+
+            {/* Quick select buttons */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                  }))
+                }
+                className="px-4 py-2 !rounded-button whitespace-nowrap cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200"
+              >
+                Weekdays
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    days: ["Saturday", "Sunday"],
+                  }))
+                }
+                className="px-4 py-2 !rounded-button whitespace-nowrap cursor-pointer transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200"
+              >
+                Weekends
+              </button>
+            </div>
+
+            {/* Day toggle buttons */}
+            <div className="flex flex-wrap gap-2">
               {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
-                <label key={day} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={formData.days.includes(day)}
-                    onChange={() => handleDayToggle(day)}
-                  />
-                  <span className="ml-1">{day}</span>
-                </label>
+                <button
+                  key={day}
+                  type="button"
+                  onClick={() => handleDayToggle(day)}
+                  className={`px-4 py-2 !rounded-button whitespace-nowrap cursor-pointer transition-colors ${
+                    formData.days.includes(day)
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {day}
+                </button>
               ))}
             </div>
-          </div>
+          </div>    
         )}
 
-        <div>
-          <label className="font-semibold">Time(s) to take medicine:</label>
-          {formData.times.map((time, index) => (
-            <div key={index} className="flex items-center gap-2 mt-2">
+        {/* Time Input Section */}
+        <div className="flex justify-between items-center mb-4">
+          <label className="block text-gray-700 font-medium mb-2">Time(s) to take medicine: <span className="text-red-500">*</span></label>
+          <button
+            type="button"
+            onClick={handleAddTime}
+            className="text-blue-600 font-medium hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+          >
+            + Add Time
+          </button>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+            {formData.times.map((time, index) => (
+            <div key={index} className="flex items-center bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
               <input
                 type="time"
                 value={time}
@@ -216,20 +306,14 @@ export default function FormModal({ onClose, onSaved }) {
               <button
                 type="button"
                 onClick={() => handleRemoveTime(index)}
-                className="text-red-500 hover:text-red-700"
+                className="ml-2 text-gray-400 hover:text-red-500 cursor-pointer"
                 title="Remove"
+                disabled={formData.times.length === 1}
               >
-                ×
+                <i className="fas fa-times"></i>
               </button>
             </div>
           ))}
-          <button
-            type="button"
-            onClick={handleAddTime}
-            className="mt-2 text-blue-500 hover:underline"
-          >
-            + Add Time
-          </button>
         </div>
 
         <div className="flex justify-end gap-2 pt-2">

@@ -87,7 +87,7 @@ const DoctorPatientMedicationSummary = () => {
           let status = "";
           if (tod > endDate) {
             // Prescription already ended
-            status = adherenceRate >= 90 ? "Completed" : "Didn't Finish";
+            status = adherenceRate >= 90 ? "Completed" : "Completed but Missed Some Doses";
           } else {
             // Still ongoing
             status = "Ongoing";

@@ -14,6 +14,17 @@ export default function Prescription() {
   const [showAdd, setShowAdd] = useState(false);
   const [editing, setEditing] = useState(null);
   const [viewingHistoryId, setViewingHistoryId] = useState(null);
+  const [sortField, setSortField] = useState('startDate');
+  const [sortDirection, setSortDirection] = useState('desc');
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
 
   const fetchPrescriptions = async () => {
     if (!user?.patientId) return;
@@ -33,7 +44,26 @@ export default function Prescription() {
     p.medicineName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const sortedPrescriptions = [...filteredPrescriptions].sort((a, b) => {
+    let valA, valB;
 
+    if (sortField === 'startDate') {
+      valA = new Date(a.startDate);
+      valB = new Date(b.startDate);
+    } else if (sortField === 'medicineName') {
+      valA = a.medicineName.toLowerCase();
+      valB = b.medicineName.toLowerCase();
+    } else if (sortField === 'status') {
+      const getStatus = (p) => new Date(p.endDate).setHours(0,0,0,0) < new Date().setHours(0,0,0,0) ? 'Finished' : 'Ongoing';
+      valA = getStatus(a);
+      valB = getStatus(b);
+    }
+
+    if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+    if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
+  
   const handleDelete = async (id) => {
     if (!confirm("Delete this prescription?")) return;
     await axios.delete(`https://localhost:7015/api/prescriptions/${id}`);
@@ -44,19 +74,20 @@ export default function Prescription() {
   <div className="p-4">
     <div className="flex justify-between items-center mb-4 md:flex-row flex-col">
       <div className="flex-center">
-        <h2 className="text-xl font-semibold">All Prescriptions</h2>
+        <h2 className="text-2xl font-bold">All Prescriptions</h2>
       </div>
       <div className="flex gap-2">
         <button
-          className="bg-gray-500 text-white px-4 py-2 rounded"
+          className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer transition"
           onClick={() => navigate("/today-prescriptions")}
         >
           See Today
         </button>
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded !rounded-button whitespace-nowrap cursor-pointer flex items-center gap-2 transition-colors"
           onClick={() => setShowAdd(true)}
         >
+          <i className="fas fa-plus"></i>
           Add Prescription
         </button>
       </div>
@@ -80,16 +111,23 @@ export default function Prescription() {
       <table className="w-full table-auto bg-white rounded shadow">
         <thead>
           <tr className="bg-emerald-100 text-center">
-            <th className="px-4 py-2">Medicine</th>
+            <th className="px-4 py-2 cursor-pointer" onClick={() => handleSort('medicineName')}>
+              Medicine {sortField === 'medicineName' && (sortDirection === 'asc' ? '▲' : '▼')}
+            </th>
             <th className="px-4 py-2">Instruction</th>
-            <th className="px-4 py-2">Duration</th>
+            <th className="px-4 py-2 cursor-pointer" onClick={() => handleSort('startDate')}>
+              Duration {sortField === 'startDate' && (sortDirection === 'asc' ? '▲' : '▼')}
+            </th>
             <th className="px-4 py-2">Dosage</th>
             <th className="px-4 py-2">Times</th>
             <th className="px-4 py-2">Days</th>
-            <th className="px-4 py-2">Status</th>
+            <th className="px-4 py-2 cursor-pointer" onClick={() => handleSort('status')}>
+              Status {sortField === 'status' && (sortDirection === 'asc' ? '▲' : '▼')}
+            </th>
             <th className="px-4 py-2">Action</th>
           </tr>
         </thead>
+
         <tbody>
           {filteredPrescriptions.length === 0 ? (
             <tr>
@@ -98,7 +136,7 @@ export default function Prescription() {
               </td>
             </tr>
           ) : (
-            filteredPrescriptions.map((p) => (
+            sortedPrescriptions.map((p) => (
               <tr key={p.prescriptionId} className="border-t text-center">
                 <td className="px-4 py-2">{p.medicineName}</td>
                 <td className="px-4 py-2 w-50">{p.instruction}</td>
@@ -116,55 +154,69 @@ export default function Prescription() {
                   })}
                 </td>
                 <td className="px-4 py-2">{p.dosage || "-"}</td>
-                <td className="px-4 py-2">
-                  <ul className="list-disc pl-4">
-                    {p.prescriptionTimes?.map((t, i) => (
-                      <li key={i}>{t.timeOfDay}</li>
-                    )) || "-"}
-                  </ul>
+                <td className="px-4 py-2 text-center">
+                  {p.prescriptionTimes?.length > 0 ? (
+                    p.prescriptionTimes
+                      .map((t) => {
+                        const [hourStr, minStr] = t.timeOfDay.split(":");
+                        const hour = parseInt(hourStr, 10);
+                        const ampm = hour >= 12 ? "PM" : "AM";
+                        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+                        return `${hour12}:${minStr} ${ampm}`;
+                      })
+                      .join(", ")
+                  ) : (
+                    "-"
+                  )}
+                </td>
+                <td className="px-4 py-2 text-center">
+                  {p.prescriptionDays?.length === 7 ? (
+                    <span>Daily</span>
+                  ) : p.prescriptionDays?.length > 0 ? (
+                    <span>
+                      {p.prescriptionDays
+                        .sort((a, b) => a.dayOfWeek - b.dayOfWeek)
+                        .map((d) => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][d.dayOfWeek])
+                        .join(", ")}
+                    </span>
+                  ) : (
+                    "-"
+                  )}
                 </td>
                 <td className="px-4 py-2">
-                  <ul className="list-disc pl-4">
-                    {p.prescriptionDays?.map((d, i) => {
-                      const days = [
-                        "Sunday",
-                        "Monday",
-                        "Tuesday",
-                        "Wednesday",
-                        "Thursday",
-                        "Friday",
-                        "Saturday",
-                      ];
-                      return <li key={i}>{days[d.dayOfWeek]}</li>;
-                    }) || "-"}
-                  </ul>
+                  {new Date(p.endDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0) ? (
+                    <span className="bg-gray-300 text-gray-800 px-2 py-1 rounded text-xs">Finished</span>
+                  ) : (
+                    <span className="bg-green-200 text-green-800 px-2 py-1 rounded text-xs">Ongoing</span>
+                  )}
                 </td>
-                <td className="px-4 py-2">
-                  {new Date(p.endDate).setHours(0, 0, 0, 0) <
-                  new Date().setHours(0, 0, 0, 0)
-                    ? "Finished"
-                    : "Ongoing"}
-                </td>
-                <td className="px-4 py-2 flex gap-2 flex-wrap justify-center">
+
+                <td className="px-4 py-2 flex gap-3 flex-wrap justify-center text-lg">
                   <button
-                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+                    title="Edit"
+                    className="text-blue-600 hover:text-blue-800 cursor-pointer"
                     onClick={() => setEditing(p)}
                   >
-                    Edit
+                    <i className="fas fa-pen"></i>
                   </button>
                   <button
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                    title="Delete"
+                    className="text-red-600 hover:text-red-800 cursor-pointer"
                     onClick={() => handleDelete(p.prescriptionId)}
                   >
-                    Delete
+                    <i className="fas fa-trash"></i>
                   </button>
                   <button
-                    className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition"
-                    onClick={() => setViewingHistoryId(p.prescriptionId)}
+                    title="History"
+                    className="text-purple-600 hover:text-purple-800 cursor-pointer"
+                    onClick={() => navigate(`/medication-history/${p.prescriptionId}`)}
                   >
-                    History
+                    <i className="fas fa-history"></i>
                   </button>
+
                 </td>
+
+
               </tr>
             ))
           )}
