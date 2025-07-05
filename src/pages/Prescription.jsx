@@ -16,6 +16,8 @@ export default function Prescription() {
   const [viewingHistoryId, setViewingHistoryId] = useState(null);
   const [sortField, setSortField] = useState('startDate');
   const [sortDirection, setSortDirection] = useState('desc');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedDeleteId, setSelectedDeleteId] = useState(null);
 
   const handleSort = (field) => {
     if (sortField === field) {
@@ -64,10 +66,20 @@ export default function Prescription() {
     return 0;
   });
   
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this prescription?")) return;
-    await axios.delete(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/prescriptions/${id}`);
-    fetchPrescriptions();
+  const confirmDelete = (id) => {
+    setSelectedDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/prescriptions/${selectedDeleteId}`);
+      setShowDeleteModal(false);
+      setSelectedDeleteId(null);
+      fetchPrescriptions();
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
   };
 
   return (
@@ -202,7 +214,7 @@ export default function Prescription() {
                   <button
                     title="Delete"
                     className="text-red-600 hover:text-red-800 cursor-pointer"
-                    onClick={() => handleDelete(p.prescriptionId)}
+                    onClick={() => confirmDelete(p.prescriptionId)}
                   >
                     <i className="fas fa-trash"></i>
                   </button>
@@ -299,6 +311,16 @@ function HistoryModal({ prescriptionId, onClose }) {
           </button>
         </div>
       </div>
+
+      <Modal
+        show={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedDeleteId(null);
+        }}
+        message="Are you sure you want to delete this prescription?"
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }
