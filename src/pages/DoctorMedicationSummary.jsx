@@ -330,7 +330,7 @@ const DoctorPatientMedicationSummary = () => {
                       </div>
 
                       <h4 className="text-sm font-semibold text-gray-700 mt-6 mb-3">Recent Dose History</h4>
-                      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+                      <div className="bg-white border border-gray-200 rounded-md overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200">
                           <thead className="bg-gray-50">
                             <tr>
@@ -366,8 +366,8 @@ const DoctorPatientMedicationSummary = () => {
 
                     <div>
                       <h4 className="text-sm font-semibold text-gray-700 mb-3">Adherence Visualization</h4>
-                      <div className="bg-white border border-gray-200 rounded-md p-4">
-                        <div id={`adherence-chart-${prescription.id}`} style={{ height: "300px" }}></div>
+                      <div className="bg-white border border-gray-200 rounded-md p-4 overflow-x-auto">
+                        <div id={`adherence-chart-${prescription.id}`} style={{ height: "300px", minWidth: "300px" }}></div>
                       </div>
                     </div>
                   </div>
