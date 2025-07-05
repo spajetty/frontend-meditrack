@@ -207,19 +207,20 @@ const DoctorPatientMedicationSummary = () => {
               )}
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">Time Period:</span>
-            <select
-              className="border text-sm rounded px-2 py-1"
-              value={selectedTimeFilter}
-              onChange={(e) => setSelectedTimeFilter(e.target.value)}
-            >
-              {timeFilterOptions.map((option) => (
-                <option key={option}>{option}</option>
-              ))}
-            </select>
-          </div>
-          
+          {/* 
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Time Period:</span>
+              <select
+                className="border text-sm rounded px-2 py-1"
+                value={selectedTimeFilter}
+                onChange={(e) => setSelectedTimeFilter(e.target.value)}
+              >
+                {timeFilterOptions.map((option) => (
+                  <option key={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+           */}
         </div>
       </header>
 
