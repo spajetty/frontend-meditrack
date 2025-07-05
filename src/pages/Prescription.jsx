@@ -254,6 +254,16 @@ export default function Prescription() {
         onClose={() => setViewingHistoryId(null)}
       />
     )}
+
+    <Modal
+      show={showDeleteModal}
+      onClose={() => {
+        setShowDeleteModal(false);
+        setSelectedDeleteId(null);
+      }}
+      message="Are you sure you want to delete this prescription?"
+      onConfirm={handleDelete}
+    />
   </div>
 );
 
@@ -312,16 +322,6 @@ function HistoryModal({ prescriptionId, onClose }) {
           </button>
         </div>
       </div>
-
-      <Modal
-        show={showDeleteModal}
-        onClose={() => {
-          setShowDeleteModal(false);
-          setSelectedDeleteId(null);
-        }}
-        message="Are you sure you want to delete this prescription?"
-        onConfirm={handleDelete}
-      />
     </div>
   );
 }
