@@ -255,7 +255,7 @@ const DoctorPatientMedicationSummary = () => {
                 onClick={() => toggleCard(prescription.id)}
                 className="px-6 py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center cursor-pointer hover:bg-gray-100 gap-2"
               >
-                {/* Left side: Medicine name + dosage + progress (on mobile) */}
+                {/* Left section */}
                 <div className="flex-1 w-full">
                   <div className="flex items-center flex-wrap">
                     <h3 className="text-lg font-bold">{prescription.medicineName}</h3>
@@ -273,7 +273,7 @@ const DoctorPatientMedicationSummary = () => {
                   </div>
                   <p className="text-sm text-gray-600">{prescription.dosage}</p>
 
-                  {/* Progress bar: always shown, but stacked on mobile */}
+                  {/* Progress bar on mobile */}
                   <div className="mt-2 flex flex-wrap items-center gap-2 sm:hidden">
                     <span className="text-sm font-medium">Adherence:</span>
                     <div className="flex-1 bg-gray-200 rounded-full h-2.5">
@@ -286,12 +286,14 @@ const DoctorPatientMedicationSummary = () => {
                   </div>
                 </div>
 
-                {/* Right side: Dates + progress (only on sm and up) */}
+                {/* Right section – date always shown, progress hidden on mobile */}
                 <div className="text-right">
                   <p className="text-xs text-gray-500 whitespace-nowrap">
                     {formatDate(prescription.startDate)} - {formatDate(prescription.endDate)}
                   </p>
-                  <div className="mt-2 flex items-center justify-end gap-2">
+
+                  {/* Progress bar only visible from sm and up */}
+                  <div className="mt-2 hidden sm:flex items-center justify-end gap-2">
                     <span className="text-sm font-medium">Adherence:</span>
                     <div className="w-24 bg-gray-200 rounded-full h-2.5">
                       <div
@@ -303,7 +305,7 @@ const DoctorPatientMedicationSummary = () => {
                   </div>
                 </div>
 
-                {/* Arrow Icon */}
+                {/* Arrow icon */}
                 <div className="ml-4">
                   <i
                     className={`fas fa-chevron-${expandedCard === prescription.id ? "up" : "down"} text-gray-400`}
