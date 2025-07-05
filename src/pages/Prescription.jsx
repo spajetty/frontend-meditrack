@@ -3,6 +3,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import FormModal from "../components/FormModal";
 import EditModal from "../components/EditModal";
+import Modal from "../components/Modal";
 import { useNavigate } from "react-router-dom";
 
 export default function Prescription() {
