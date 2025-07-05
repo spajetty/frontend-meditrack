@@ -15,7 +15,7 @@ const MedicationHistory = () => {
 
     // Fetch prescription name
     axios
-      .get(`https://localhost:7015/api/prescriptions/details/${prescriptionId}`)
+      .get(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/prescriptions/details/${prescriptionId}`)
       .then((response) => {
         setPrescriptionName(response.data.medicineName);
       })
@@ -25,7 +25,7 @@ const MedicationHistory = () => {
 
     // Fetch medication history (dose logs)
     axios
-      .get(`https://localhost:7015/api/doselog/history/${prescriptionId}`)
+      .get(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/doselog/history/${prescriptionId}`)
       .then((response) => {
         const formattedData = response.data
           .filter((entry) => entry.status === 1 || entry.status === 2)

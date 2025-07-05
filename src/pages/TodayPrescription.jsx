@@ -13,7 +13,7 @@ export default function TodayPrescription() {
 
   const markAsTaken = async (id) => {
     try {
-      await axios.post(`https://localhost:7015/api/doselog/mark-taken/${id}`);
+      await axios.post(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/doselog/mark-taken/${id}`);
       fetchToday(); // Refresh the list to update the status
     } catch (err) {
       console.error("Mark error:", err);
@@ -24,7 +24,7 @@ export default function TodayPrescription() {
   const fetchToday = async () => {
     if (!user?.patientId) return;
     try {
-      const res = await axios.get(`https://localhost:7015/api/prescriptions/today/${user.patientId}`);
+      const res = await axios.get(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/prescriptions/today/${user.patientId}`);
 
       // Sort by scheduled time (earliest first)
       const sorted = res.data.sort((a, b) => new Date(a.scheduledDateTime) - new Date(b.scheduledDateTime));
@@ -45,7 +45,7 @@ export default function TodayPrescription() {
 
   const undoDose = async (id) => {
     try {
-      await axios.post(`https://localhost:7015/api/doselog/undo/${id}`);  // ✅ Fixed the typo here
+      await axios.post(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/doselog/undo/${id}`);  // ✅ Fixed the typo here
       fetchToday();
     } catch (err) {
       console.error("Undo error:", err);

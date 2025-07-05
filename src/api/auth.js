@@ -1,5 +1,5 @@
 export async function registerDoctor(data) {
-  const response = await fetch("https://localhost:7015/api/auth/doctor-register", {
+  const response = await fetch("https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/auth/doctor-register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -16,7 +16,7 @@ export async function registerDoctor(data) {
 }
 
 export async function searchDoctors(query) {
-  const response = await fetch(`https://localhost:7015/api/auth/search-doctors?query=${encodeURIComponent(query)}`);
+  const response = await fetch(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/auth/search-doctors?query=${encodeURIComponent(query)}`);
   if (!response.ok) {
     throw new Error("No matching doctors found.");
   }
@@ -24,7 +24,7 @@ export async function searchDoctors(query) {
 }
 
 export async function registerPatient(data) {
-  const response = await fetch("https://localhost:7015/api/auth/patient-register", {
+  const response = await fetch("https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/auth/patient-register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export async function registerPatient(data) {
 }
 
 export async function loginPatient(data) {
-  const response = await fetch("https://localhost:7015/api/auth/patient-login", {
+  const response = await fetch("https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/auth/patient-login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -50,7 +50,7 @@ export async function loginPatient(data) {
 }
 
 export async function loginDoctor(data) {
-  const response = await fetch("https://localhost:7015/api/auth/doctor-login", {
+  const response = await fetch("https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/auth/doctor-login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),

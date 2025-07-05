@@ -95,7 +95,7 @@ export default function FormModal({ onClose, onSaved }) {
     };
 
     try {
-      const res = await axios.post("https://localhost:7015/api/prescriptions", payload);
+      const res = await axios.post("https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/prescriptions", payload);
       console.log("Prescription added:", res.data);
       if (onSaved) onSaved();
       onClose();

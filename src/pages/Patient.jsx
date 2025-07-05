@@ -13,7 +13,7 @@ const Patient = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axios.get('https://localhost:7015/api/patients');
+        const response = await axios.get('https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/patients');
         const filtered = response.data.filter(p => p.doctorId === user.doctorId);
         setPatients(filtered);
       } catch (error) {

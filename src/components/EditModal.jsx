@@ -87,7 +87,7 @@ export default function EditModal({ prescription, onClose, onSaved }) {
     };
 
     try {
-      await axios.put(`https://localhost:7015/api/prescriptions/${prescription.prescriptionId}`, payload);
+      await axios.put(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/prescriptions/${prescription.prescriptionId}`, payload);
       if (onSaved) onSaved();
       onClose();
     } catch (err) {

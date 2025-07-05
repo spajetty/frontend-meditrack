@@ -56,9 +56,9 @@ const DoctorPatientMedicationSummary = () => {
     const fetchData = async () => {
       try {
         const [patientRes, presRes, doseRes] = await Promise.all([
-          axios.get(`https://localhost:7015/api/patients/${patientId}`),
-          axios.get(`https://localhost:7015/api/prescriptions/${patientId}`),
-          axios.get(`https://localhost:7015/api/doselog/patient/${patientId}`),
+          axios.get(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/patients/${patientId}`),
+          axios.get(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/prescriptions/${patientId}`),
+          axios.get(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/doselog/patient/${patientId}`),
         ]);
 
         setPatientInfo(patientRes.data);

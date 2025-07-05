@@ -40,7 +40,7 @@ export default function RegisterPage() {
   }, [form.doctorSearch, role]);
 
   const checkEmailExists = async (email) => {
-    const response = await fetch(`https://localhost:7015/api/auth/check-email?email=${encodeURIComponent(email)}`);
+    const response = await fetch(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/auth/check-email?email=${encodeURIComponent(email)}`);
     if (!response.ok) {
       const text = await response.text();
       throw new Error(text || "Unable to verify email.");

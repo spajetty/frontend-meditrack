@@ -29,7 +29,7 @@ export default function Prescription() {
   const fetchPrescriptions = async () => {
     if (!user?.patientId) return;
     try {
-      const res = await axios.get(`https://localhost:7015/api/prescriptions/${user.patientId}`);
+      const res = await axios.get(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/prescriptions/${user.patientId}`);
       setPrescriptions(res.data);
     } catch (err) {
       console.error("Fetch error:", err);
@@ -66,7 +66,7 @@ export default function Prescription() {
   
   const handleDelete = async (id) => {
     if (!confirm("Delete this prescription?")) return;
-    await axios.delete(`https://localhost:7015/api/prescriptions/${id}`);
+    await axios.delete(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/prescriptions/${id}`);
     fetchPrescriptions();
   };
 
@@ -253,7 +253,7 @@ function HistoryModal({ prescriptionId, onClose }) {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const res = await axios.get(`https://localhost:7015/api/doselog/history/${prescriptionId}`);
+        const res = await axios.get(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/doselog/history/${prescriptionId}`);
         setLogs(res.data);
       } catch (err) {
         console.error("History fetch error:", err);

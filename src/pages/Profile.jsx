@@ -24,8 +24,8 @@ const Profile = () => {
         try {
           const endpoint =
             user.role === 'doctor'
-              ? `https://localhost:7015/api/doctor/${user.doctorId}`
-              : `https://localhost:7015/api/patients/${user.patientId}`;
+              ? `https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/doctor/${user.doctorId}`
+              : `https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/patients/${user.patientId}`;
           const response = await axios.get(endpoint);
           setProfile(response.data);
           setFormData(response.data);
@@ -39,7 +39,7 @@ const Profile = () => {
       if (user.role === 'patient') {
         const fetchDoctors = async () => {
           try {
-            const doctorResponse = await axios.get('https://localhost:7015/api/doctor');
+            const doctorResponse = await axios.get('https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/doctor');
             setDoctors(doctorResponse.data);
           } catch (error) {
             console.error('Error fetching doctors:', error);
@@ -62,8 +62,8 @@ const Profile = () => {
   try {
     const endpoint =
       user.role === 'doctor'
-        ? `https://localhost:7015/api/doctor/${user.doctorId}`
-        : `https://localhost:7015/api/patients/${user.patientId}`;
+        ? `https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/doctor/${user.doctorId}`
+        : `https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/patients/${user.patientId}`;
 
     console.log('Saving profile data:', formData);
     await axios.put(endpoint, formData);
@@ -105,9 +105,9 @@ const Profile = () => {
   const handleDelete = async () => {
     try {
       if (user.role === 'doctor') {
-        await axios.delete(`https://localhost:7015/api/doctor/${user.doctorId}`);
+        await axios.delete(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/doctor/${user.doctorId}`);
       } else if (user.role === 'patient') {
-        await axios.delete(`https://localhost:7015/api/patients/${user.patientId}`);
+        await axios.delete(`https://meditrack-f9bqhsedfqbaf2es.canadacentral-01.azurewebsites.net/api/patients/${user.patientId}`);
       }
 
       setModalMessage('Profile deleted successfully.');
