@@ -253,13 +253,14 @@ const DoctorPatientMedicationSummary = () => {
             >
               <div
                 onClick={() => toggleCard(prescription.id)}
-                className="px-6 py-4 flex justify-between items-center cursor-pointer hover:bg-gray-100"
+                className="px-6 py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center cursor-pointer hover:bg-gray-100 gap-2"
               >
-                <div className="flex-1">
-                  <div className="flex items-center">
+                {/* Left side: Medicine name + dosage + progress (on mobile) */}
+                <div className="flex-1 w-full">
+                  <div className="flex items-center flex-wrap">
                     <h3 className="text-lg font-bold">{prescription.medicineName}</h3>
                     <span
-                      className={`ml-3 px-2 py-1 text-xs rounded-full ${
+                      className={`ml-3 mt-1 sm:mt-0 px-2 py-1 text-xs rounded-full ${
                         prescription.status === "Completed"
                           ? "bg-green-100 text-green-800"
                           : prescription.status === "Ongoing"
@@ -271,22 +272,38 @@ const DoctorPatientMedicationSummary = () => {
                     </span>
                   </div>
                   <p className="text-sm text-gray-600">{prescription.dosage}</p>
+
+                  {/* Progress bar: always shown, but stacked on mobile */}
+                  <div className="mt-2 flex flex-wrap items-center gap-2 sm:hidden">
+                    <span className="text-sm font-medium">Adherence:</span>
+                    <div className="flex-1 bg-gray-200 rounded-full h-2.5">
+                      <div
+                        className={`h-2.5 rounded-full ${getAdherenceColorClass(prescription.adherence.rate)}`}
+                        style={{ width: `${prescription.adherence.rate}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-sm font-medium">{prescription.adherence.rate}%</span>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-gray-500">
+
+                {/* Right side: Dates + progress (only on sm and up) */}
+                <div className="text-right hidden sm:block">
+                  <p className="text-xs text-gray-500 whitespace-nowrap">
                     {formatDate(prescription.startDate)} - {formatDate(prescription.endDate)}
                   </p>
-                  <div className="mt-1 flex items-center justify-end">
-                    <span className="text-sm font-medium mr-2">Adherence:</span>
+                  <div className="mt-2 flex items-center justify-end gap-2">
+                    <span className="text-sm font-medium">Adherence:</span>
                     <div className="w-24 bg-gray-200 rounded-full h-2.5">
                       <div
                         className={`h-2.5 rounded-full ${getAdherenceColorClass(prescription.adherence.rate)}`}
                         style={{ width: `${prescription.adherence.rate}%` }}
                       ></div>
                     </div>
-                    <span className="ml-2 text-sm font-medium">{prescription.adherence.rate}%</span>
+                    <span className="text-sm font-medium">{prescription.adherence.rate}%</span>
                   </div>
                 </div>
+
+                {/* Arrow Icon */}
                 <div className="ml-4">
                   <i
                     className={`fas fa-chevron-${expandedCard === prescription.id ? "up" : "down"} text-gray-400`}
