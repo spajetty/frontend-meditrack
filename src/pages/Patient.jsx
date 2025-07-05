@@ -93,53 +93,52 @@ const Patient = () => {
         <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
       </div>
 
-      <table className="w-full border-collapse">
-        <thead className="bg-emerald-100">
-          <tr>
-            <th
-              onClick={() => handleSort('fullName')}
-              className="border p-2 cursor-pointer hover:bg-gray-100"
-            >
-              Full Name {getSortArrow('fullName')}
-            </th>
-            <th
-              onClick={() => handleSort('age')}
-              className="border p-2 cursor-pointer hover:bg-gray-100"
-            >
-              Age {getSortArrow('age')}
-            </th>
-            <th className="border p-2">Email</th>
-            <th className="border p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAndSortedPatients.map((patient) => (
-            <tr
-              key={patient.patientId}
-              className="hover:bg-gray-50 transition duration-150"
-            >
-              <td className="border p-2">{patient.fullName}</td>
-              <td className="border p-2">{getAge(patient.dateOfBirth)}</td>
-              <td className="border p-2">{patient.email}</td>
-              <td className="border p-2">
-                <div className="flex items-center justify-center">
-                  <button
-                    onClick={() => handleViewHistory(patient.patientId)}
-                    title="View Prescriptions"
-                    className="cursor-pointer px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center"
-                  >
-                    {/* Icon */}
-                    <i className="fas fa-eye mr-0 md:mr-2"></i>
-
-                    {/* Text (only show from md and up) */}
-                    <span className="hidden md:inline">View Prescriptions</span>
-                  </button>
-                </div>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full border-collapse">
+          <thead className="bg-emerald-100">
+            <tr>
+              <th
+                onClick={() => handleSort('fullName')}
+                className="border p-2 cursor-pointer hover:bg-gray-100"
+              >
+                Full Name {getSortArrow('fullName')}
+              </th>
+              <th
+                onClick={() => handleSort('age')}
+                className="border p-2 cursor-pointer hover:bg-gray-100"
+              >
+                Age {getSortArrow('age')}
+              </th>
+              <th className="border p-2">Email</th>
+              <th className="border p-2">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredAndSortedPatients.map((patient) => (
+              <tr
+                key={patient.patientId}
+                className="hover:bg-gray-50 transition duration-150"
+              >
+                <td className="border p-2">{patient.fullName}</td>
+                <td className="border p-2">{getAge(patient.dateOfBirth)}</td>
+                <td className="border p-2">{patient.email}</td>
+                <td className="border p-2">
+                  <div className="flex items-center justify-center">
+                    <button
+                      onClick={() => handleViewHistory(patient.patientId)}
+                      title="View Prescriptions"
+                      className="cursor-pointer px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center"
+                    >
+                      <i className="fas fa-eye mr-0 md:mr-2"></i>
+                      <span className="hidden md:inline">View Prescriptions</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
