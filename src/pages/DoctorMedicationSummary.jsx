@@ -287,7 +287,7 @@ const DoctorPatientMedicationSummary = () => {
                 </div>
 
                 {/* Right side: Dates + progress (only on sm and up) */}
-                <div className="text-right hidden sm:block">
+                <div className="text-right">
                   <p className="text-xs text-gray-500 whitespace-nowrap">
                     {formatDate(prescription.startDate)} - {formatDate(prescription.endDate)}
                   </p>
